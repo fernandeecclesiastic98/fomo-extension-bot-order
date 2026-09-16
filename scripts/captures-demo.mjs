@@ -3,8 +3,9 @@
  * compte, aucun chiffre réel. Le vrai code de l'interface est chargé, aplati en un seul bloc,
  * avec un faux service worker en mémoire — ce qu'on photographie est donc bien l'extension.
  *
- * Usage : node scripts/captures-demo.mjs [--gif]
- * Sorties : docs/img/*.png (+ docs/img/demo.gif avec --gif, nécessite ffmpeg).
+ * Usage : node scripts/captures-demo.mjs [--gif] [--store]
+ * Sorties : docs/img/*.png (+ docs/img/demo.gif avec --gif ; store/*.png au format 1280×800
+ * imposé par le Chrome Web Store avec --store).
  */
 import puppeteer from 'puppeteer';
 import { execFileSync } from 'node:child_process';
@@ -18,6 +19,8 @@ const IMAGES = join(RACINE, 'docs', 'img');
 const MODULES = ['lib/chains.js', 'lib/format.js', 'lib/fomo-page.js', 'lib/fomo-api.js', 'lib/orders.js', 'ui/styles.js', 'ui/inject.js'];
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const gif = process.argv.includes('--gif');
+const store = process.argv.includes('--store');
+const BOUTIQUE = join(RACINE, 'store');
 
 /** Aplatit les modules ES en un seul corps de fonction évaluable dans la page. */
 function aplatir() {
@@ -217,6 +220,34 @@ try {
   await capture('tiroir.png', page);
   await page.click('[data-tpa="drawer"] [data-close]');
   await sleep(600);
+
+  // 5. Captures de la boutique : plein écran au format exact 1280×800 exigé par le Web Store.
+  if (store) {
+    mkdirSync(BOUTIQUE, { recursive: true });
+    await page.setViewport({ width: 1280, height: 800, deviceScaleFactor: 1 });
+    await sleep(800);
+    await page.evaluate(() => window.__demo.handle.sync());
+    await sleep(600);
+    await page.screenshot({ path: join(BOUTIQUE, '1-ordre-de-vente.png') });
+    await page.evaluate(() => [...document.querySelectorAll('.tabs button')].find((b) => b.textContent.trim() === 'Buy').click());
+    await page.evaluate(() => {
+      const grille = document.querySelector('.quick .grid');
+      grille.innerHTML = ['$10', '$50', '$100', '$500'].map((t) => `<button type="button">${t}</button>`).join('');
+      document.querySelector('.available span').textContent = '$250 available';
+      document.querySelector('.confirm').textContent = 'Buy DEMO';
+      document.querySelector('.tabs button:first-child').className = 'on-buy';
+      document.querySelector('.tabs button:last-child').className = '';
+    });
+    await page.evaluate(() => window.__demo.handle.sync());
+    await page.waitForSelector('[data-tpa="form"][data-side="buy"]');
+    await page.evaluate(`(${remplir({ amount: '100' })})()`);
+    await sleep(900);
+    await page.screenshot({ path: join(BOUTIQUE, '2-ordre-dachat.png') });
+    await page.click('[data-tpa="chip"]');
+    await sleep(1000);
+    await page.screenshot({ path: join(BOUTIQUE, '3-tous-les-ordres.png') });
+    console.log('→ store/1-ordre-de-vente.png, store/2-ordre-dachat.png, store/3-tous-les-ordres.png');
+  }
 
 } finally {
   await browser.close();

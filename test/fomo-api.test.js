@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import {
   FALLBACK_MIN_TRADE_USD,
+  QUOTE_CHUNK,
   createFomoApi,
   findBalance,
   minTradeUsd,
@@ -170,5 +171,45 @@ describe('createFomoApi', () => {
     });
     const api = createFomoApi({ fetchImpl, storage: storageWith(jwt(NOW / 1000 + 900)), now: () => NOW });
     expect(await api.quotes(['a:1'])).toMatchObject({ ok: false, reason: 'network' });
+  });
+
+  describe('beaucoup de tokens surveillés', () => {
+    const beaucoup = Array.from({ length: 60 }, (_, i) => `T${i}:1399811149`);
+    const cote = (id) => ({ marketCap: '1000', priceUSD: '1', token: { address: id.split(':')[0], networkId: 1399811149, symbol: id.split(':')[0] } });
+    const api = (fetchImpl) => createFomoApi({ fetchImpl, storage: storageWith(jwt(NOW / 1000 + 900)), now: () => NOW });
+
+    it('découpe en paquets de 25 et rend les 60 cotes réunies', async () => {
+      const fetchImpl = vi.fn(async (_url, init) => ({
+        ok: true,
+        status: 200,
+        json: async () => ({ responseObject: JSON.parse(init.body).map(cote) }),
+      }));
+      const res = await api(fetchImpl).quotes(beaucoup);
+      expect(res.ok).toBe(true);
+      expect(Object.keys(res.quotes)).toHaveLength(60);
+      expect(fetchImpl.mock.calls.map(([, init]) => JSON.parse(init.body).length)).toEqual([QUOTE_CHUNK, QUOTE_CHUNK, 10]);
+    });
+
+    it('un paquet qui échoue ne fait pas perdre les autres tokens de vue', async () => {
+      let appel = 0;
+      const fetchImpl = vi.fn(async (_url, init) => {
+        appel += 1;
+        if (appel === 2) return { ok: false, status: 500, json: async () => ({}) };
+        return { ok: true, status: 200, json: async () => ({ responseObject: JSON.parse(init.body).map(cote) }) };
+      });
+      const res = await api(fetchImpl).quotes(beaucoup);
+      expect(res.ok).toBe(true);
+      expect(Object.keys(res.quotes)).toHaveLength(35); // 25 + 10, le paquet perdu sera réessayé au tour suivant
+    });
+
+    it('session morte sur un paquet : remonte la raison plutôt qu’une réussite partielle', async () => {
+      let appel = 0;
+      const fetchImpl = vi.fn(async (_url, init) => {
+        appel += 1;
+        if (appel === 2) return { ok: false, status: 401, json: async () => ({}) };
+        return { ok: true, status: 200, json: async () => ({ responseObject: JSON.parse(init.body).map(cote) }) };
+      });
+      expect(await api(fetchImpl).quotes(beaucoup)).toMatchObject({ ok: false, reason: 'http-401' });
+    });
   });
 });

@@ -9,16 +9,27 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const RUSH = { chain: 'solana', networkId: 1399811149, address: 'SATqS9DYpLQsM2z51P4QCoqJRHa5wboV4qjJerJRUSH', symbol: 'RUSH' };
 const RUSH_ID = `${RUSH.address}:${RUSH.networkId}`;
+// Deux autres tokens pour prouver la gestion de plusieurs ordres en parallèle.
+const MOON = { chain: 'solana', networkId: 1399811149, address: 'MOONxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxMOON', symbol: 'MOON' };
+const DOGG = { chain: 'solana', networkId: 1399811149, address: 'DOGGxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxDOGG', symbol: 'DOGG' };
+const MOON_ID = `${MOON.address}:${MOON.networkId}`;
+const DOGG_ID = `${DOGG.address}:${DOGG.networkId}`;
 
 function makeWorld() {
   const world = {
-    market: { [RUSH_ID]: { mc: 250_000, price: 5.76, symbol: 'RUSH' } },
-    balance: 100,
+    market: {
+      [RUSH_ID]: { mc: 250_000, price: 5.76, symbol: 'RUSH' },
+      [MOON_ID]: { mc: 1_000_000, price: 0.02, symbol: 'MOON' },
+      [DOGG_ID]: { mc: 4_000_000, price: 0.4, symbol: 'DOGG' },
+    },
+    // Avoirs par token ; `world.balance` reste le raccourci vers celui de RUSH.
+    balances: { [RUSH_ID]: 100, [MOON_ID]: 5_000, [DOGG_ID]: 250 },
     quotesReply: null, // remplace la réponse QUOTES (ex. session expirée)
     probeReply: null, // remplace la réponse PROBE (contrôle de l'interface fomo)
     expInSec: 3000, // secondes restantes sur la session fomo
     telegram: [], // messages partis vers l'API Telegram
     sellBehavior: 'sells', // 'sells' | 'no-effect' | 'fails-before-click'
+    quoteCalls: [], // les listes d'ids demandées, pour prouver la cotation groupée
     executeCalls: [],
     created: [],
     removed: [],
@@ -29,6 +40,13 @@ function makeWorld() {
     nextTabId: 100,
     listeners: {},
   };
+
+  Object.defineProperty(world, 'balance', {
+    get: () => world.balances[RUSH_ID],
+    set: (v) => {
+      world.balances[RUSH_ID] = v;
+    },
+  });
 
   const on = (name) => ({ addListener: (fn) => (world.listeners[name] = fn) });
 
@@ -46,6 +64,7 @@ function makeWorld() {
       case 'PROBE':
         return world.probeReply ?? { ok: true, manquants: [] };
       case 'QUOTES':
+        world.quoteCalls.push(msg.ids);
         if (world.quotesReply) return world.quotesReply;
         return {
           ok: true,
@@ -54,17 +73,22 @@ function makeWorld() {
           quotes: Object.fromEntries(msg.ids.filter((id) => world.market[id]).map((id) => [id, world.market[id]])),
         };
       case 'BALANCE': {
-        const quote = world.market[RUSH_ID];
-        return { ok: true, found: world.balance > 0, amount: world.balance, usd: world.balance * quote.price, mc: quote.mc, price: quote.price, at: Date.now() };
+        const id = `${msg.address}:${msg.networkId}`;
+        const quote = world.market[id] ?? world.market[RUSH_ID];
+        const avoir = world.balances[id] ?? 0;
+        return { ok: true, found: avoir > 0, amount: avoir, usd: avoir * quote.price, mc: quote.mc, price: quote.price, at: Date.now() };
       }
-      case 'EXECUTE_TRADE':
+      case 'EXECUTE_TRADE': {
         world.executeCalls.push({ tabId, ...msg });
         if (msg.dryRun) return { ok: true, stage: 'pret', dryRun: true, submitted: false, detail: 'Tout est prêt', steps: [] };
         if (world.sellBehavior === 'fails-before-click') return { ok: false, stage: 'devis', detail: 'devis absent', steps: [] };
+        const id = `${msg.address}:${msg.networkId}`;
         if (world.sellBehavior === 'sells') {
-          world.balance = msg.side === 'buy' ? world.balance + msg.amountUsd / world.market[RUSH_ID].price : world.balance * (1 - msg.sellPct / 100);
+          const avoir = world.balances[id] ?? 0;
+          world.balances[id] = msg.side === 'buy' ? avoir + msg.amountUsd / world.market[id].price : avoir * (1 - msg.sellPct / 100);
         }
         return { ok: true, stage: 'soumis', submitted: true, detail: 'Envoyé', steps: ['Clic'] };
+      }
       default:
         return { ok: false };
     }
@@ -173,6 +197,59 @@ describe('service worker — cycle complet d’un ordre', () => {
     // La MC reste au-dessus : aucune seconde vente.
     await vi.advanceTimersByTimeAsync(30_000);
     expect(world.executeCalls).toHaveLength(1);
+  });
+
+  it('plusieurs tokens : une seule cotation groupée, chaque ordre suivi et exécuté sur SON token', async () => {
+    const world = await boot();
+    // Trois ordres sur trois tokens : un TP, un stop, un achat sur repli.
+    await addTp(world); // RUSH : vendre 25 % au-dessus de 500 k
+    await world.send({
+      type: 'ADD_ORDER',
+      currentValue: world.market[MOON_ID].mc,
+      input: { ...MOON, kind: 'sl', metric: 'mc', target: 700_000, sellPct: 100, confirmSec: 0 },
+    });
+    await world.send({
+      type: 'ADD_ORDER',
+      currentValue: world.market[DOGG_ID].mc,
+      input: { ...DOGG, side: 'buy', metric: 'mc', target: 3_000_000, amountUsd: 50 },
+    });
+    expect(world.orders()).toHaveLength(3);
+
+    // Un seul onglet veilleur cote les trois tokens EN UNE SEULE demande, pas un tour par token.
+    await vi.advanceTimersByTimeAsync(10_000);
+    expect(world.created).toHaveLength(0);
+    expect(world.executeCalls).toHaveLength(0);
+    expect(world.orders().every((o) => o.status === 'armed')).toBe(true);
+    expect(world.quoteCalls.length).toBeGreaterThan(0);
+    for (const ids of world.quoteCalls) expect([...ids].sort()).toEqual([DOGG_ID, MOON_ID, RUSH_ID].sort());
+    expect(Object.keys(world.storage.health.quotes)).toHaveLength(3);
+
+    // Les trois seuils sont franchis dans le même mouvement de marché.
+    world.market[RUSH_ID].mc = 520_000;
+    world.market[MOON_ID].mc = 650_000;
+    world.market[DOGG_ID].mc = 2_900_000;
+    await vi.advanceTimersByTimeAsync(240_000);
+
+    // Les trois sont partis, chacun avec son adresse, son sens et son montant.
+    expect(world.orders().every((o) => o.status === 'done')).toBe(true);
+    const parToken = Object.fromEntries(world.executeCalls.map((c) => [c.address, c]));
+    expect(world.executeCalls).toHaveLength(3);
+    expect(parToken[RUSH.address]).toMatchObject({ side: 'sell', sellPct: 25, symbol: 'RUSH' });
+    expect(parToken[MOON.address]).toMatchObject({ side: 'sell', sellPct: 100, symbol: 'MOON' });
+    expect(parToken[DOGG.address]).toMatchObject({ side: 'buy', amountUsd: 50, symbol: 'DOGG' });
+    // Chaque exécution a eu lieu sur la page de SON token, dans un onglet à elle.
+    for (const call of world.executeCalls) {
+      expect(world.created.find((t) => t.id === call.tabId).url).toContain(call.address);
+    }
+    // Un seul trade à la fois : les onglets d'exécution ne se chevauchent pas.
+    expect(new Set(world.executeCalls.map((c) => c.tabId)).size).toBe(3);
+    expect(world.balances[RUSH_ID]).toBe(75);
+    expect(world.balances[MOON_ID]).toBe(0);
+    expect(world.balances[DOGG_ID]).toBeGreaterThan(250);
+
+    // Rien ne se rejoue au tour suivant.
+    await vi.advanceTimersByTimeAsync(60_000);
+    expect(world.executeCalls).toHaveLength(3);
   });
 
   it('clic « Sell » envoyé mais solde inchangé : échec à vérifier, JAMAIS de nouvel essai', async () => {

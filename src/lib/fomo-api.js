@@ -16,6 +16,10 @@ import { SUPPORTED_CHAINS_HEADER, normalizeAddress, tokenId } from './chains.js'
 
 export const API_BASE = 'https://prod-api.fomo.family';
 
+/** Taille d'un paquet de cotation : l'appli fomo elle-même n'en demande jamais davantage d'un coup. */
+export const QUOTE_CHUNK = 25;
+const SESSION_REASONS = ['no-session', 'expired', 'http-401', 'http-403'];
+
 export function readSession(storage, nowMs) {
   let token = null;
   try {
@@ -71,12 +75,28 @@ export function createFomoApi({ fetchImpl, storage, now = () => Date.now() }) {
   }
 
   return {
-    /** `{ ok, quotes: { [tokenId]: { mc, price, symbol, name } }, at }` */
+    /**
+     * `{ ok, quotes: { [tokenId]: { mc, price, symbol, name } }, at }`
+     *
+     * Découpé par paquets : surveiller trente tokens ne doit pas dépendre d'une seule requête
+     * géante que fomo pourrait refuser d'un bloc — un paquet perdu ne coûte que les tokens
+     * qu'il portait, les autres ordres continuent d'être suivis.
+     */
     async quotes(ids) {
       if (!ids.length) return { ok: true, quotes: {}, at: now() };
-      const res = await call('/proxy/filterTokens', { method: 'POST', body: ids });
-      if (!res.ok) return res;
-      return { ok: true, quotes: parseFilterTokens(res.json), at: now(), expInSec: res.expInSec };
+      const paquets = [];
+      for (let i = 0; i < ids.length; i += QUOTE_CHUNK) paquets.push(ids.slice(i, i + QUOTE_CHUNK));
+      const reponses = await Promise.all(paquets.map((paquet) => call('/proxy/filterTokens', { method: 'POST', body: paquet })));
+
+      // Une session morte doit remonter telle quelle : c'est elle qui déclenche l'alerte.
+      const session = reponses.find((r) => !r.ok && SESSION_REASONS.includes(r.reason));
+      if (session) return session;
+      const reussies = reponses.filter((r) => r.ok);
+      if (!reussies.length) return reponses[0];
+
+      const quotes = {};
+      for (const res of reussies) Object.assign(quotes, parseFilterTokens(res.json));
+      return { ok: true, quotes, at: now(), expInSec: reussies[0].expInSec };
     },
 
     async userId() {

@@ -27,6 +27,7 @@ stays in your browser.
 | 🛒 **Limit buy (dip)** | *Buy $100 if market cap falls to $1.5M.* |
 | 🚀 **Breakout buy** | *Buy $100 if it breaks above $3M.* |
 | 🔗 **Attached exits** | A buy order can place its own take profit (×2) and stop (−30%) automatically, relative to your real fill. |
+| 🗂️ **Many tokens at once** | Watch as many tokens as you like — they are all quoted in the same batched call, and orders that trigger together are executed one after another, each on its own token. |
 | 🖥️ **Native UI** | A "Market / Auto order" switch under fomo's own Buy/Sell tabs. Same palette, same sizing, motion included. |
 | 📱 **Telegram alerts** | Triggers, fills and failures pushed to your phone — because a Windows notification is useless at 3 a.m. |
 | 🧪 **Dry-run mode** | Every step except the final click, so you can verify before trusting it with real money. |
@@ -69,9 +70,13 @@ The summary line spells out exactly what will happen before you confirm.
 ## How it works
 
 - A background worker quotes your tokens every 3 seconds through fomo's own API, using the session
-  already open in your browser.
+  already open in your browser. **One call covers every token you watch** (batched by 25), so ten
+  orders on ten tokens cost the same as one.
 - When a threshold is crossed, it opens a fresh tab on the token, drives fomo's real trade panel
   (tab → amount → quote → risk checkboxes you allowed → confirm) and closes it.
+- **One trade at a time.** If several orders trigger in the same move, they queue up and run in
+  order — and each one re-checks its own threshold on the way out of the queue, so an order whose
+  level no longer holds is re-armed instead of executed late.
 - Success is confirmed by **reading your token balance before and after** — not by a toast message.
 - If the click went through but the balance never moved, the order is marked *failed, needs
   checking*. It is **never retried**, so you can't buy or sell twice by accident.
