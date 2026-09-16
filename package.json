@@ -1,6 +1,6 @@
 {
   "name": "fomo-auto-orders",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "private": true,
   "type": "module",
   "description": "Take-profit, stop-loss and limit buy orders for fomo.family, inside the app.",

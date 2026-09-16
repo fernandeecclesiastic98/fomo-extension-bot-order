@@ -12,6 +12,7 @@ import {
   findAcknowledgements,
   findAmountInput,
   findConfirmButton,
+  findMaxButton,
   findPercentPresets,
   findTradePanel,
   findTradeTabs,
@@ -225,5 +226,52 @@ describe('interface fomo en français', () => {
       <div><button>$10</button><button>$100</button></div></div>`;
     expect(findTradeTabs(document)).not.toBeNull();
     expect(activeSide(findTradePanel(document))).toBe('buy');
+  });
+});
+
+/**
+ * Libellés RELEVÉS sur la page française d'un utilisateur le 2026-09-16 (token WASSIE), pas
+ * traduits par nous : c'est le contrat réel. « Max. » porte un point — une égalité stricte sur
+ * « Max » échouait, et la vente en pourcentage avec elle.
+ */
+describe('libellés réels relevés en français', () => {
+  const RELEVE = ['✕', 'Réglages et journal', 'Ordres auto', 'liquidités', 'Déposer plus', '-$0.1824h', 'Alertes', 'Tokens',
+    'Classement', 'Swaps', 'Thèse', 'Acheter', 'Vendre', '$10', '$100', '$500', '$1000', 'Max.', 'Acheter WASSIE',
+    'Voir plus', 'Vos positions', 'Réessayer'];
+
+  beforeEach(() => {
+    document.documentElement.lang = 'fr';
+    document.body.innerHTML = `
+      <div class="header">${['liquidités', 'Déposer plus'].map((t) => `<button>${t}</button>`).join('')}</div>
+      <div class="rounded-2xl">
+        <div class="flex gap-2"><button>Acheter</button><button>Vendre</button></div>
+        <div><span>$</span><input placeholder="0"></div>
+        <div class="flex"><div class="grid">${['$10', '$100', '$500', '$1000'].map((t) => `<button>${t}</button>`).join('')}</div></div>
+        <div><span>$0.18 disponible</span><button>Max.</button></div>
+        <button>Acheter WASSIE</button>
+      </div>`;
+  });
+
+  it('« Max. » (avec le point) est bien le bouton Max', () => {
+    expect(findMaxButton(findTradePanel(document))?.textContent).toBe('Max.');
+  });
+
+  it('« liquidités » / « Déposer plus » : session reconnue, pas de faux « déconnecté »', () => {
+    expect(isLoggedIn(document)).toBe(true);
+    expect(looksLoggedOut(document)).toBe(false);
+  });
+
+  it('onglets, disponible et bouton « Acheter WASSIE »', () => {
+    const panel = findTradePanel(document);
+    expect(findTradeTabs(document)).not.toBeNull();
+    expect(activeSide(panel)).toBe('buy');
+    expect(readAvailableUsd(panel)).toBe(0.18);
+    expect(confirmState(findConfirmButton(panel, 'WASSIE', 'buy'), 'WASSIE', 'buy').normal).toBe(true);
+  });
+
+  it('aucun libellé relevé n’est pris pour un onglet de trade par erreur', () => {
+    const faux = RELEVE.filter((t) => !['Acheter', 'Vendre'].includes(t));
+    document.body.innerHTML = `<div><div>${faux.map((t) => `<button>${t}</button>`).join('')}</div></div>`;
+    expect(findTradeTabs(document)).toBeNull();
   });
 });

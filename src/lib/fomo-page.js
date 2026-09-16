@@ -31,20 +31,24 @@ export const LEXIQUE = {
   max: ['max', 'maximum', 'tout'],
   available: ['available', 'disponible', 'disponibles', 'dispo'],
   insufficient: [/insufficient (cash )?balance/, /solde insuffisant/, /fonds insuffisants?/, /cash insuffisant/],
-  connected: [/(^|\s|\d)cash$/, /^deposit( more)?$/, /(^|\s|\d)solde$/, /^depos(er|it)( plus)?$/, /^ajouter des fonds$/],
+  connected: [/(^|\s|\d)cash$/, /^deposit( more)?$/, /(^|\s|\d)(solde|liquidites)$/, /^depos(er|it)( plus)?$/, /^ajouter des fonds$/],
   loggedOut: [/^(log ?in|sign ?in|sign ?up|connect)$/, /^(connexion|se connecter|s'?inscrire|connecte-toi)$/],
   acknowledge: [/understand|acknowledge|accept/, /j'?ai compris|je comprends|compris/],
   warning: [/understand|warning/, /compris|avertissement|attention/],
 };
 
-/** Comparaison des libellés : sans casse, sans accents (« Acheter » = « acheter » = « ACHETER »). */
+/**
+ * Comparaison des libellés : sans casse, sans accents, sans ponctuation finale.
+ * « Acheter » = « acheter » = « ACHETER », et « Max. » (relevé réel en FR) = « Max ».
+ */
 export function norm(texte) {
   return (texte ?? '')
     .normalize('NFD')
     .replace(/[̀-ͯ]/g, '')
     .replace(/\s+/g, ' ')
     .trim()
-    .toLowerCase();
+    .toLowerCase()
+    .replace(/[.:…]+$/, '');
 }
 
 /** Le libellé est-il l'un des mots du concept ? Égalité stricte (mots) ou motif (expressions). */
