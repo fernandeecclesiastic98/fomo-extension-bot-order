@@ -65,7 +65,9 @@
         const here = chains.parseTokenPath(location.pathname);
         if (!here) return { ok: false, reason: 'pas-page-token', path: location.pathname };
         const manquants = [];
-        if (!page.isLoggedIn(document)) manquants.push('session fomo');
+        // La session se juge sur le jeton, pas sur un bouton de l'en-tête : sinon fomo qui
+        // redessine sa barre du haut déclenche une alerte « session morte » alors que tout va bien.
+        if (!api.readSession(window.localStorage, Date.now()).ok) manquants.push('session fomo');
         const tabs = page.findTradeTabs(document);
         if (!tabs) manquants.push('onglets Buy/Sell');
         const panel = page.findTradePanel(document);

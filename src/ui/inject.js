@@ -17,7 +17,7 @@
  */
 
 import { CHAIN_LABELS, parseTokenPath, tokenId } from '../lib/chains.js';
-import { createFomoApi, minTradeUsd } from '../lib/fomo-api.js';
+import { createFomoApi, minTradeUsd, readSession as readFomoSession } from '../lib/fomo-api.js';
 import { activeSide, findTradePanel, findTradeTabs, isLoggedIn, isOurs, readAvailableUsd, readTitle } from '../lib/fomo-page.js';
 import { formatAgo, formatCompactInput, formatPct, formatPriceUsd, parseCompactUsd } from '../lib/format.js';
 import {
@@ -360,6 +360,33 @@ export function mountIntegration({ resolveUserId, doc = document, win = window, 
   }
 
   /**
+   * « Connecté » se lit sur le JETON de session, pas sur un bouton de l'en-tête : c'est ce jeton,
+   * et lui seul, qui permet de coter, de lire les soldes et de trader. Un en-tête que fomo
+   * redessine (ou qui n'affiche rien quand le cash est à zéro) ne doit pas faire croire à une
+   * déconnexion. Le repère visuel ne sert plus que de filet quand le jeton est illisible.
+   */
+  function sessionState() {
+    let jeton = { ok: false, reason: 'no-session' };
+    try {
+      jeton = readFomoSession(win.localStorage, Date.now());
+    } catch {
+      jeton = { ok: false, reason: 'illisible' };
+    }
+    return { ...jeton, domHint: isLoggedIn(doc) };
+  }
+
+  function hasSession() {
+    const etat = sessionState();
+    return etat.ok || (etat.reason !== 'expired' && etat.domHint);
+  }
+
+  function sessionMessage() {
+    const etat = sessionState();
+    if (etat.reason === 'expired') return 'Session fomo expirée : recharge la page (F5) pour la renouveler, sinon aucun ordre ne peut être posé ni exécuté.';
+    return 'Connecte-toi à fomo : sans session, aucun ordre ne peut être posé ni exécuté.';
+  }
+
+  /**
    * Repli quand fomo n'affiche pas son panneau Buy/Sell sur une page token (déconnecté, page
    * encore en chargement, ou marché sans achat direct : les perps ont Long/Short). Le message dit
    * laquelle des deux causes s'applique — « panneau introuvable » tout court n'aide personne.
@@ -384,12 +411,12 @@ export function mountIntegration({ resolveUserId, doc = document, win = window, 
       });
       doc.body.appendChild(box);
     }
-    const loggedIn = isLoggedIn(doc);
+    const loggedIn = hasSession();
     setText(
       box.querySelector('[data-slot="why"]'),
       loggedIn
         ? 'fomo n’affiche pas son panneau Buy / Sell sur cette page : page encore en chargement, ou marché sans achat direct. Tes ordres déjà posés restent surveillés.'
-        : 'Connecte-toi à fomo : sans session, aucun ordre ne peut être posé ni exécuté.',
+        : sessionMessage(),
     );
     setHidden(box.querySelector('[data-slot="sides"]'), !loggedIn);
     for (const button of box.querySelectorAll('[data-side]')) toggleClass(button, 'tpa-on', button.dataset.side === ui.floatingSide);

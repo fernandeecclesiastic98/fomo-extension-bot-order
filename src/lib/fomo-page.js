@@ -198,13 +198,17 @@ export function classifyAck(label) {
 }
 
 /**
- * Connecté = le bouton « $X cash » (ou « Deposit more ») de la barre du haut existe. Le montant
- * est un nombre animé sans texte lisible : `textContent` ne rend que « cash » (relevé réel).
+ * INDICE visuel de connexion : le bouton « $X cash » / « Deposit more » de la barre du haut. Le
+ * montant est un nombre animé sans texte lisible : `textContent` ne rend que « cash » (relevé réel).
+ *
+ * Ce n'est qu'un indice, jamais la preuve : fomo peut redessiner son en-tête, et rien ne garantit
+ * qu'un compte à zéro affiche ces boutons. La VRAIE session est le jeton lu par `readSession` —
+ * c'est lui qui décide si un ordre peut être posé ou exécuté. Ne t'en sers que pour compléter.
  */
 export function isLoggedIn(doc) {
   return buttons(doc).some((b) => {
     const label = textOf(b);
-    return /(^|\s|\d)cash$/i.test(label) || label === 'Deposit more';
+    return /(^|\s|\d)cash$/i.test(label) || /^deposit( more)?$/i.test(label);
   });
 }
 

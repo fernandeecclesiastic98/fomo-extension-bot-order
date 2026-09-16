@@ -22,6 +22,12 @@ const flush = async (n = 4) => {
   for (let i = 0; i < n; i++) await new Promise((r) => setTimeout(r, 0));
 };
 
+/** Jeton Privy comme celui que fomo range dans `localStorage`, avec l'expiration voulue. */
+function jwt(expSec) {
+  const b64 = (o) => Buffer.from(JSON.stringify(o)).toString('base64url');
+  return `${b64({ alg: 'ES256' })}.${b64({ iat: expSec - 3600, exp: expSec })}.sig`;
+}
+
 function makeWin() {
   const stops = [];
   const win = {
@@ -101,6 +107,7 @@ async function mount(apiOptions, chromeInitial) {
   document.body.innerHTML = PAGE;
   window.history.pushState({}, '', `/tokens/solana/${RUSH}`);
   window.sessionStorage.clear();
+  window.localStorage.clear();
   win = makeWin();
   const chrome = makeChrome(chromeInitial);
   const api = makeApi(apiOptions);
@@ -129,6 +136,10 @@ async function enterOrderMode(handle) {
   click($('[data-tpa="mode"] [data-mode="order"]'));
   handle.sync();
   await flush();
+  // Sous charge, la cote et l'avoir arrivent après quelques tours de boucle : on attend le
+  // formulaire au lieu de supposer qu'il est déjà là. S'il ne vient jamais, le test échoue quand même.
+  for (let i = 0; i < 50 && !form(); i++) await flush(2);
+  expect(form()).not.toBeNull();
 }
 
 describe('greffes sur la page token', () => {
@@ -406,6 +417,31 @@ describe('page token sans panneau Buy / Sell de fomo', () => {
     const box = $('[data-tpa="floating"]');
     expect(box.querySelector('[data-slot="why"]').textContent).toMatch(/Connecte-toi à fomo/);
     expect(box.querySelector('[data-slot="sides"]').hidden).toBe(true);
+    expect(box.querySelector('[data-tpa="form"]')).toBeNull();
+  });
+
+  /**
+   * Le bug signalé : « Connecte-toi à fomo » alors que la session est bien vivante. La connexion
+   * se lisait sur un bouton de l'en-tête ; fomo redessine sa barre du haut (ou n'affiche rien
+   * quand le cash est à zéro) et l'extension se croyait déconnectée. C'est le JETON qui décide.
+   */
+  it('en-tête méconnaissable mais jeton valide : ne réclame PAS une reconnexion', async () => {
+    const { handle } = await mount();
+    window.localStorage.setItem('privy:token', JSON.stringify(jwt(Date.now() / 1000 + 1800)));
+    dropPanel(handle, { loggedOut: true }); // plus aucun repère visuel de connexion
+    const box = $('[data-tpa="floating"]');
+    expect(box.querySelector('[data-slot="why"]').textContent).not.toMatch(/Connecte-toi/);
+    expect(box.querySelector('[data-slot="why"]').textContent).toMatch(/page encore en chargement/);
+    expect(box.querySelector('[data-slot="sides"]').hidden).toBe(false);
+    expect(box.querySelector('[data-tpa="form"]')).not.toBeNull();
+  });
+
+  it('jeton expiré : dit de recharger la page, même si l’en-tête a l’air connecté', async () => {
+    const { handle } = await mount();
+    window.localStorage.setItem('privy:token', JSON.stringify(jwt(Date.now() / 1000 - 60)));
+    dropPanel(handle); // l'en-tête, lui, affiche toujours « Deposit more »
+    const box = $('[data-tpa="floating"]');
+    expect(box.querySelector('[data-slot="why"]').textContent).toMatch(/Session fomo expirée.*recharge la page/);
     expect(box.querySelector('[data-tpa="form"]')).toBeNull();
   });
 
