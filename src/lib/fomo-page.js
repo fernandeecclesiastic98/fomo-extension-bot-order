@@ -20,6 +20,46 @@ export function textOf(el) {
 }
 
 /**
+ * fomo est TRADUIT : la même page affiche « Buy / Sell » à l'un et « Acheter / Vendre » à l'autre
+ * (signalé le 2026-09-16 par un utilisateur en interface française — l'extension ne voyait plus ni
+ * le panneau ni la session). Tous les repères textuels passent donc par ce lexique, comparé sans
+ * casse ni accents. Ajouter une langue = ajouter des mots ici, rien d'autre à toucher.
+ */
+export const LEXIQUE = {
+  buy: ['buy', 'acheter', 'achat'],
+  sell: ['sell', 'vendre', 'vente'],
+  max: ['max', 'maximum', 'tout'],
+  available: ['available', 'disponible', 'disponibles', 'dispo'],
+  insufficient: [/insufficient (cash )?balance/, /solde insuffisant/, /fonds insuffisants?/, /cash insuffisant/],
+  connected: [/(^|\s|\d)cash$/, /^deposit( more)?$/, /(^|\s|\d)solde$/, /^depos(er|it)( plus)?$/, /^ajouter des fonds$/],
+  loggedOut: [/^(log ?in|sign ?in|sign ?up|connect)$/, /^(connexion|se connecter|s'?inscrire|connecte-toi)$/],
+  acknowledge: [/understand|acknowledge|accept/, /j'?ai compris|je comprends|compris/],
+  warning: [/understand|warning/, /compris|avertissement|attention/],
+};
+
+/** Comparaison des libellés : sans casse, sans accents (« Acheter » = « acheter » = « ACHETER »). */
+export function norm(texte) {
+  return (texte ?? '')
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+}
+
+/** Le libellé est-il l'un des mots du concept ? Égalité stricte (mots) ou motif (expressions). */
+export function estUn(concept, label) {
+  const n = norm(label);
+  return LEXIQUE[concept].some((terme) => (typeof terme === 'string' ? n === terme : terme.test(n)));
+}
+
+/** Le libellé contient-il l'un des motifs du concept ? (pour les phrases, pas les boutons courts) */
+export function contient(concept, label) {
+  const n = norm(label);
+  return LEXIQUE[concept].some((terme) => (typeof terme === 'string' ? n.includes(terme) : terme.test(n)));
+}
+
+/**
  * Tout ce que l'extension injecte porte `data-tpa`. Ces éléments vivent DANS le panneau de fomo
  * (nos boutons « $100 », « 25 % »…) : sans cette exclusion, l'exécuteur les prendrait pour ceux
  * de fomo et cliquerait dans notre propre formulaire.
@@ -34,10 +74,10 @@ function buttons(root) {
   return [...root.querySelectorAll('button')].filter((b) => !isOurs(b));
 }
 
-/** Les deux onglets Buy/Sell du panneau de trade : deux boutons frères, texte exact. */
+/** Les deux onglets Buy/Sell du panneau de trade : deux boutons frères, libellé exact (toutes langues). */
 export function findTradeTabs(doc) {
-  for (const sell of buttons(doc).filter((b) => textOf(b) === 'Sell')) {
-    const buy = [...(sell.parentElement?.children ?? [])].find((el) => el.tagName === 'BUTTON' && textOf(el) === 'Buy');
+  for (const sell of buttons(doc).filter((b) => estUn('sell', textOf(b)))) {
+    const buy = [...(sell.parentElement?.children ?? [])].find((el) => el.tagName === 'BUTTON' && estUn('buy', textOf(el)));
     if (buy) return { buy, sell };
   }
   return null;
@@ -89,7 +129,7 @@ export function findAmountInput(panel) {
 }
 
 export function findMaxButton(panel) {
-  return buttons(panel).find((b) => textOf(b) === 'Max') ?? null;
+  return buttons(panel).find((b) => estUn('max', textOf(b))) ?? null;
 }
 
 /**
@@ -97,22 +137,31 @@ export function findMaxButton(panel) {
  * cash, sur l'onglet Sell la valeur de l'avoir.
  */
 export function readAvailableUsd(panel) {
+  const mots = LEXIQUE.available.join('|');
+  // Les deux ordres existent selon la langue : « $0.92 available », « $0.92 disponible »,
+  // mais aussi « disponible : $0.92 ». On accepte les deux plutôt que de parier sur l'un.
+  const apres = new RegExp(`^\\$([\\d,]+(?:\\.\\d+)?)\\s+(?:${mots})$`);
+  const avant = new RegExp(`^(?:${mots})\\s*:?\\s*\\$([\\d,]+(?:\\.\\d+)?)$`);
   for (const el of panel.querySelectorAll('span,div')) {
     if (el.children.length > 0 || isOurs(el)) continue;
-    const match = /^\$([\d,]+(?:\.\d+)?)\s+available$/i.exec(textOf(el));
+    const label = norm(textOf(el));
+    const match = apres.exec(label) ?? avant.exec(label);
     if (match) return Number(match[1].replace(/,/g, ''));
   }
   return null;
 }
 
-/** fomo remplace « $X available » par « Insufficient cash balance » quand le montant dépasse le cash. */
+/** fomo remplace « $X available » par « Insufficient cash balance » (« solde insuffisant ») quand le montant dépasse le cash. */
 export function hasInsufficientCash(panel) {
   return [...panel.querySelectorAll('div,span')].some(
-    (el) => el.children.length === 0 && !isOurs(el) && /insufficient (cash )?balance/i.test(textOf(el)),
+    (el) => el.children.length === 0 && !isOurs(el) && contient('insufficient', textOf(el)),
   );
 }
 
-const SIDE_LABEL = { buy: 'Buy', sell: 'Sell' };
+/** Verbe affiché par le bouton de confirmation, dans la langue de la page. */
+function verbesDuCote(side) {
+  return side ? LEXIQUE[side] : [...LEXIQUE.buy, ...LEXIQUE.sell];
+}
 
 /**
  * Le bouton de confirmation : « Buy RUSH » / « Sell RUSH ». Sous le minimum ou pendant le devis,
@@ -122,12 +171,12 @@ const SIDE_LABEL = { buy: 'Buy', sell: 'Sell' };
  */
 export function findConfirmButton(panel, symbol, side) {
   const all = buttons(panel);
-  const verbs = side ? [SIDE_LABEL[side]] : ['Buy', 'Sell'];
+  const verbs = verbesDuCote(side);
   if (symbol) {
-    const exact = all.find((b) => verbs.some((v) => textOf(b) === `${v} ${symbol}`));
+    const exact = all.find((b) => verbs.some((v) => norm(textOf(b)) === `${v} ${norm(symbol)}`));
     if (exact) return exact;
   }
-  const byLabel = all.find((b) => verbs.some((v) => new RegExp(`^${v}\\s+\\S`).test(textOf(b))));
+  const byLabel = all.find((b) => verbs.some((v) => new RegExp(`^${v}\\s+\\S`).test(norm(textOf(b)))));
   if (byLabel) return byLabel;
   const presets = findAmountPresets(panel);
   if (!presets.length) return null;
@@ -135,15 +184,15 @@ export function findConfirmButton(panel, symbol, side) {
   return (
     after.find((b) => {
       const label = textOf(b);
-      return label !== '' && label !== 'Max' && !isAckCheckbox(b) && !/understand|warning/i.test(label);
+      return label !== '' && !estUn('max', label) && !isAckCheckbox(b) && !contient('warning', label);
     }) ?? null
   );
 }
 
 export function confirmState(button, symbol, side = 'sell') {
   const label = textOf(button);
-  const verb = SIDE_LABEL[side];
-  const normal = symbol ? label === `${verb} ${symbol}` : new RegExp(`^${verb}\\s+\\S`).test(label);
+  const verbs = verbesDuCote(side);
+  const normal = verbs.some((v) => (symbol ? norm(label) === `${v} ${norm(symbol)}` : new RegExp(`^${v}\\s+\\S`).test(norm(label))));
   return {
     enabled: !button.disabled && button.getAttribute('aria-disabled') !== 'true',
     label,
@@ -169,7 +218,7 @@ export function findAcknowledgements(panel) {
 
   for (const textButton of buttons(panel)) {
     const label = textOf(textButton);
-    if (!/understand|acknowledge|accept|j'ai compris|je comprends/i.test(label)) continue;
+    if (!contient('acknowledge', label)) continue;
     const row = textButton.parentElement;
     const checkbox =
       [...(row?.children ?? [])].find((el) => el !== textButton && (el.tagName === 'BUTTON' || isAckCheckbox(el))) ??
@@ -206,15 +255,12 @@ export function classifyAck(label) {
  * c'est lui qui décide si un ordre peut être posé ou exécuté. Ne t'en sers que pour compléter.
  */
 export function isLoggedIn(doc) {
-  return buttons(doc).some((b) => {
-    const label = textOf(b);
-    return /(^|\s|\d)cash$/i.test(label) || /^deposit( more)?$/i.test(label);
-  });
+  return buttons(doc).some((b) => estUn('connected', textOf(b)));
 }
 
 export function looksLoggedOut(doc) {
   if (isLoggedIn(doc)) return false;
-  return buttons(doc).some((b) => /^(log ?in|sign ?in|sign ?up|connect)$/i.test(textOf(b)));
+  return buttons(doc).some((b) => estUn('loggedOut', textOf(b)));
 }
 
 /** Le titre de l'onglet porte la MC arrondie : « $2.2M MC | RUSH | fomo ». */

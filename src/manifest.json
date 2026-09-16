@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Ordres auto pour fomo",
   "short_name": "Ordres auto",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Ordres automatiques sur fomo.family : achat sur repli ou cassure, prise de profit, stop — depuis la page du token.",
   "minimum_chrome_version": "116",
   "permissions": ["storage", "alarms", "tabs", "notifications"],

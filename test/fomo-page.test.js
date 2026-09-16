@@ -176,3 +176,54 @@ describe('onglet Buy (pas de pourcentages)', () => {
     expect(isSellTabActive(findTradePanel(document))).toBe(false);
   });
 });
+
+/**
+ * fomo est traduit : un utilisateur en interface FRANÇAISE (`<html lang="fr">`, 2026-09-16) ne
+ * voyait ni le panneau ni la session, et l'exécuteur annonçait « fomo a changé son interface ».
+ * La page ci-dessous est la capture réelle avec les libellés traduits — mêmes structures, mêmes
+ * classes, seuls les textes changent, ce qui est exactement ce que fait fomo.
+ */
+describe('interface fomo en français', () => {
+  const FR = FIXTURE.replace(/>Buy</g, '>Acheter<')
+    .replace(/>Sell</g, '>Vendre<')
+    .replace(/>Sell RUSH</g, '>Vendre RUSH<')
+    .replace(/>Buy RUSH</g, '>Acheter RUSH<')
+    .replace(/available/g, 'disponible')
+    .replace(/I understand the risks of trading this token\./g, 'Je comprends les risques liés à ce token.')
+    .replace(/Warning:/g, 'Avertissement :');
+
+  beforeEach(() => {
+    document.body.innerHTML = FR;
+    document.documentElement.lang = 'fr';
+  });
+
+  it('trouve les onglets « Acheter » / « Vendre » et le panneau', () => {
+    const tabs = findTradeTabs(document);
+    expect(tabs?.buy.textContent).toBe('Acheter');
+    expect(tabs?.sell.textContent).toBe('Vendre');
+    expect(findTradePanel(document)).not.toBeNull();
+  });
+
+  it('lit le disponible, les pourcentages et le bouton de confirmation traduits', () => {
+    const panel = findTradePanel(document);
+    expect(readAvailableUsd(panel)).toBeGreaterThan(0);
+    expect(findPercentPresets(panel).map((p) => p.pct)).toContain(25);
+    const confirm = findConfirmButton(panel, 'RUSH', 'sell');
+    expect(confirm?.textContent.trim()).toBe('Vendre RUSH');
+    expect(confirmState(confirm, 'RUSH', 'sell').normal).toBe(true);
+  });
+
+  it('reconnaît la case d’avertissement traduite', () => {
+    const acks = findAcknowledgements(findTradePanel(document));
+    expect(acks.length).toBeGreaterThan(0);
+  });
+
+  it('accents et casse indifférents : « ACHETER », « acheter »', () => {
+    document.body.innerHTML = `
+      <div><div class="flex gap-2"><button>ACHETER</button><button>vendre</button></div>
+      <div><input placeholder="0"></div>
+      <div><button>$10</button><button>$100</button></div></div>`;
+    expect(findTradeTabs(document)).not.toBeNull();
+    expect(activeSide(findTradePanel(document))).toBe('buy');
+  });
+});

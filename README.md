@@ -27,6 +27,7 @@ stays in your browser.
 | 🛒 **Limit buy (dip)** | *Buy $100 if market cap falls to $1.5M.* |
 | 🚀 **Breakout buy** | *Buy $100 if it breaks above $3M.* |
 | 🔗 **Attached exits** | A buy order can place its own take profit (×2) and stop (−30%) automatically, relative to your real fill. |
+| 🌍 **Follows fomo's language** | Works whether fomo shows you *Buy / Sell* or *Acheter / Vendre* — labels are matched case- and accent-insensitively. |
 | 🗂️ **Many tokens at once** | Watch as many tokens as you like — they are all quoted in the same batched call, and orders that trigger together are executed one after another, each on its own token. |
 | 🖥️ **Native UI** | A "Market / Auto order" switch under fomo's own Buy/Sell tabs. Same palette, same sizing, motion included. |
 | 📱 **Telegram alerts** | Triggers, fills and failures pushed to your phone — because a Windows notification is useless at 3 a.m. |
