@@ -3,7 +3,7 @@
   "name": "Ordres auto pour fomo",
   "short_name": "Ordres auto",
   "version": "0.1.0",
-  "description": "Ordres automatiques sur fomo.family, réglés depuis la page du token : achat sur repli ou cassure, prise de profit, stop. Exécutés avec ta propre session fomo.",
+  "description": "Ordres automatiques sur fomo.family : achat sur repli ou cassure, prise de profit, stop — depuis la page du token.",
   "minimum_chrome_version": "116",
   "permissions": ["storage", "alarms", "tabs", "notifications"],
   "host_permissions": ["https://fomo.family/*", "https://api.telegram.org/*"],

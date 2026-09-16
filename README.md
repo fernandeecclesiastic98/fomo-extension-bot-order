@@ -41,13 +41,19 @@ stays in your browser.
 
 ## Install (2 minutes)
 
-1. Download this repository (green **Code** button → *Download ZIP*, then unzip) or `git clone` it.
+1. **[⬇️ Download the latest release (ZIP)](../../releases/latest)** and unzip it anywhere.
 2. Open `chrome://extensions` (or `brave://extensions`).
-3. Turn on **Developer mode**.
-4. Click **Load unpacked** and select the **`src`** folder of this repository.
+3. Turn on **Developer mode** (top right).
+4. Click **Load unpacked** and select the unzipped folder (the one containing `manifest.json`).
 5. Reload any fomo.family tab you already had open.
 
-No build step, no bundler, no dependencies at runtime — it is plain JavaScript.
+No build step, no bundler, no runtime dependency — it is plain JavaScript.
+
+> **Why isn't it one click?** Chrome and Brave only allow one-click installs from the Chrome Web
+> Store; a `.crx` downloaded from GitHub is blocked by the browser itself. A Web Store listing is
+> planned — ⭐ star the repo to get pinged when it lands.
+
+To update later: download the new ZIP, replace the folder, then hit ⟳ on the extension card.
 
 ## How to place an order
 
@@ -145,6 +151,11 @@ prix), elle surveille et clique à ta place dans ta propre session. Aucune clé,
   confirmé n'est jamais relancé.
 - Le navigateur doit rester ouvert et l'ordinateur allumé.
 - Alertes Telegram disponibles pour être prévenu sur ton téléphone.
+
+## Privacy
+
+No backend, no analytics, no account. Your fomo session never leaves your browser and the
+extension never sees a private key. Details: [PRIVACY.md](PRIVACY.md).
 
 ## License
 
