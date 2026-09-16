@@ -1,0 +1,45 @@
+{
+  "manifest_version": 3,
+  "name": "Ordres auto pour fomo",
+  "short_name": "Ordres auto",
+  "version": "0.1.0",
+  "description": "Ordres automatiques sur fomo.family, réglés depuis la page du token : achat sur repli ou cassure, prise de profit, stop. Exécutés avec ta propre session fomo.",
+  "minimum_chrome_version": "116",
+  "permissions": ["storage", "alarms", "tabs", "notifications"],
+  "host_permissions": ["https://fomo.family/*", "https://api.telegram.org/*"],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "Ordres auto pour fomo",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png"
+    }
+  },
+  "options_ui": {
+    "page": "popup.html",
+    "open_in_tab": true
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://fomo.family/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["lib/*.js", "ui/*.js"],
+      "matches": ["https://fomo.family/*"]
+    }
+  ]
+}

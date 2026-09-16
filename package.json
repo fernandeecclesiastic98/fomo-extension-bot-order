@@ -1,0 +1,35 @@
+{
+  "name": "fomo-auto-orders",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Take-profit, stop-loss and limit buy orders for fomo.family, inside the app.",
+  "keywords": [
+    "fomo",
+    "fomo.family",
+    "take-profit",
+    "stop-loss",
+    "limit-order",
+    "trading-bot",
+    "chrome-extension",
+    "brave",
+    "solana",
+    "memecoin"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "test": "vitest run",
+    "lint": "eslint .",
+    "icons": "node scripts/make-icons.mjs",
+    "captures": "node scripts/captures-demo.mjs --gif",
+    "veille": "node scripts/veille-longue.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "eslint": "^9.39.1",
+    "globals": "^14.0.0",
+    "jsdom": "^30.0.1",
+    "puppeteer": "^24.0.0",
+    "vitest": "^3.2.4"
+  }
+}

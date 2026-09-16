@@ -1,0 +1,5 @@
+node_modules/
+data/
+docs/img/*.webm
+.DS_Store
+Thumbs.db

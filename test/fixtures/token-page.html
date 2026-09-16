@@ -1,0 +1,82 @@
+<!-- Squelette réel de la page token de fomo.family (onglet Buy, token RUSH), relevé le 2026-09-15, appli v1.399.1.
+     Barre du haut (nav « Main »), colonne de droite (panneau de trade, carte position, About, Your positions).
+     SVG, images et styles en ligne retirés. Sert de contrat aux greffes de l'interface injectée. -->
+<div class="desktop-content">
+<header class="flex items-center gap-4">
+<a href="/token">fomo</a>
+<input placeholder="Search for tokens or traders...">
+<div class="flex min-w-0 flex-1 justify-end">
+<nav aria-label="Main" data-orientation="horizontal" dir="ltr" data-slot="navigation-menu" data-viewport="false" class="group/navigation-menu relative flex max-w-max flex-1 items-center justify-center">
+<div>
+<ul data-orientation="horizontal" data-slot="navigation-menu-list" class="group flex-1 list-none justify-center flex gap-2 items-stretch" dir="ltr">
+<li data-slot="navigation-menu-item" class="relative flex shrink-0 flex-col items-start justify-center h-12 rounded-xl border border-bg-tertiary px-2">
+<button data-state="closed" aria-expanded="false" data-slot="navigation-menu-trigger" class="group inline-flex items-center justify-center outline-none text-sm"><div class="flex gap-1 items-baseline tabular-nums"><span translate="no"><number-flow-react></number-flow-react></span><div class="text-text-tertiary">cash</div></div></button>
+<button type="button" class="text-accent-primary text-xs font-bold hover:opacity-80">Deposit more</button>
+</li>
+<li data-slot="navigation-menu-item" class="relative flex shrink-0 rounded-xl h-12 hover:bg-bg-secondary px-2 py-1 border border-bg-tertiary bg-bg-primary">
+<button data-state="closed" aria-expanded="false" data-slot="navigation-menu-trigger" class="group inline-flex items-center justify-center outline-none"><a class="flex gap-2 items-center min-w-26" href="/profile/trader"><div class="flex flex-col flex-1"><div class="text-sm tabular-nums text-left"><span translate="no"><number-flow-react></number-flow-react></span></div><div class="flex gap-1 items-center tabular-nums"><div class="flex gap-0.5 items-center tabular-nums" translate="no"><div>+</div><div>$0.09</div></div><div class="text-text-tertiary text-xs">24h</div></div></div></a></button>
+</li>
+</ul>
+</div>
+</nav>
+</div>
+</header>
+<div class="flex gap-3 items-start flex-1 min-w-0 min-h-0 overflow-y-auto pb-3">
+<div class="flex-1 min-w-0" id="centre"><div class="flex gap-3 text-sm"><button>Holders<span translate="no"> (460)</span></button><button>Swaps</button><button>Thesis<span translate="no"> (160)</span></button></div></div>
+<div class="flex flex-col gap-4 w-82 2xl:w-95 3xl:w-110 shrink-0 pr-4" id="colonne">
+<div class="flex flex-col">
+<div class="border border-bg-tertiary rounded-2xl p-2 flex flex-col gap-2">
+<div class="flex gap-2">
+<button type="button" class="flex-1 p-2 rounded-lg text-base font-bold transition-colors bg-green-transparent text-green">Buy</button>
+<button type="button" class="flex-1 p-2 rounded-lg text-base font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-bg-secondary hover:bg-bg-tertiary text-text-secondary">Sell</button>
+</div>
+<div class="bg-bg-secondary rounded-xl flex items-stretch text-3xl gap-px cursor-text relative border border-transparent focus-within:border-bg-tertiary">
+<div class="flex flex-1 min-w-0 items-center gap-px p-4 pr-0">
+<div class="text-text-tertiary">$</div>
+<input placeholder="0" class="flex-1 min-w-0 bg-transparent outline-none placeholder:text-text-tertiary " value="">
+</div>
+<div class="shrink-0 max-w-1/2 flex flex-col items-end justify-center p-4 pl-6 relative cursor-pointer">
+<div class="text-sm font-medium text-text-tertiary">Enter amount</div>
+</div>
+</div>
+<div class="flex gap-1">
+<div class="grid grid-cols-4 gap-2 flex-1">
+<button type="button" disabled="" class="hover-scrim h-8 rounded-lg bg-bg-secondary px-3 text-sm font-bold text-text-primary disabled:opacity-50" translate="no">$10</button>
+<button type="button" disabled="" class="hover-scrim h-8 rounded-lg bg-bg-secondary px-3 text-sm font-bold text-text-primary disabled:opacity-50" translate="no">$100</button>
+<button type="button" disabled="" class="hover-scrim h-8 rounded-lg bg-bg-secondary px-3 text-sm font-bold text-text-primary disabled:opacity-50" translate="no">$500</button>
+<button type="button" disabled="" class="hover-scrim h-8 rounded-lg bg-bg-secondary px-3 text-sm font-bold text-text-primary disabled:opacity-50" translate="no">$1000</button>
+</div>
+<button type="button" class="h-8 w-8 shrink-0 flex items-center justify-center text-text-tertiary hover:text-text-secondary transition-colors"><svg/></button>
+</div>
+<div class="flex flex-col px-2 text-sm">
+<div class="flex justify-between items-center">
+<div class="text-text-secondary"><span translate="no">$0.92 available</span></div>
+<button type="button" class="text-accent-primary hover:opacity-80 transition-opacity cursor-pointer shrink-0">Max</button>
+</div>
+</div>
+<button disabled="" class="py-2 text-center cursor-not-allowed bg-bg-secondary text-text-secondary flex h-11 items-center justify-center gap-2 rounded-xl border border-bg-tertiary/60 px-4 text-base font-bold overflow-hidden">
+<div class="min-w-0 truncate animate-flip-up">Buy RUSH</div>
+</button>
+<div class="rounded-xl overflow-hidden bg-critical-transparent">
+<div class="flex items-start py-2 gap-2 mx-2.5">
+<button type="button" class="shrink-0 mt-0.5"><svg/></button>
+<button type="button" class="flex-1 min-w-0 flex items-start justify-between">
+<div class="flex flex-col text-left">
+<span class="text-sm font-bold text-critical">Warning: Liquidity unlocked</span>
+<span class="text-xs text-text-primary/60">I understand the risks of trading this token.</span>
+</div>
+<svg/>
+</button>
+</div>
+</div>
+</div>
+<div class="grid transition-[grid-template-rows,margin-top] duration-300 ease-out grid-rows-[0fr] mt-0"><div class="overflow-hidden min-h-0"></div></div>
+</div>
+<div class="border border-bg-tertiary rounded-2xl p-2 flex flex-col gap-2">
+<button type="button" class="flex flex-col gap-1 p-2 pt-1 rounded-lg"><div class="text-xs">0.0220 RUSH</div><div class="text-xs text-text-secondary">Invested</div><div class="text-xs">$3.00</div><div class="text-xs text-text-secondary">Avg entry</div><div class="text-xs">$5.8M MC</div></button>
+</div>
+<div class="relative border border-bg-tertiary rounded-xl p-2 pb-4 mb-6">About RUSH</div>
+<div class="flex flex-col"><button type="button"><div class="text-base">Your positions</div></button></div>
+</div>
+</div>
+</div>

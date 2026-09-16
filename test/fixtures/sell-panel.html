@@ -1,0 +1,63 @@
+<!-- Relevé réel du panneau de trade de fomo.family (onglet Sell, token RUSH), 2026-09-15, appli v1.399.1.
+     SVG remplacés par <svg/>. Sert de contrat : si fomo change ces libellés, ces tests le disent. -->
+<!-- Le montant du cash est un nombre animé (shadow DOM) : textContent du bouton = « cash » seulement. -->
+<nav aria-label="Main"><button data-slot="navigation-menu-trigger"><div class="flex gap-1 items-baseline tabular-nums"><number-flow-react></number-flow-react>cash</div></button></nav>
+<div class="flex flex-col">
+<div class="border border-bg-tertiary rounded-2xl p-2 flex flex-col gap-2">
+<div class="flex gap-2">
+<button type="button" class="flex-1 p-2 rounded-lg text-base font-bold transition-colors bg-bg-secondary hover:bg-bg-tertiary text-text-secondary">Buy</button>
+<button type="button" class="flex-1 p-2 rounded-lg text-base font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-red-transparent text-red">Sell</button>
+</div>
+<div class="bg-bg-secondary rounded-xl flex items-stretch text-3xl gap-px cursor-text relative border border-transparent focus-within:border-bg-tertiary">
+<div class="flex flex-1 min-w-0 items-center gap-px p-4 pr-0">
+<div class="text-text-tertiary">$</div>
+<input placeholder="0" class="flex-1 min-w-0 bg-transparent outline-none placeholder:text-text-tertiary " value="">
+</div>
+<div class="shrink-0 max-w-1/2 flex flex-col items-end justify-center p-4 pl-6 relative cursor-pointer">
+<div class="text-sm font-medium text-text-tertiary">Enter amount</div>
+</div>
+</div>
+<div class="flex gap-1">
+<div class="grid grid-cols-4 gap-2 flex-1">
+<button type="button" class="hover-scrim h-8 rounded-lg bg-bg-secondary px-3 text-sm font-bold text-text-primary disabled:opacity-50" translate="no">10%</button>
+<button type="button" class="hover-scrim h-8 rounded-lg bg-bg-secondary px-3 text-sm font-bold text-text-primary disabled:opacity-50" translate="no">25%</button>
+<button type="button" class="hover-scrim h-8 rounded-lg bg-bg-secondary px-3 text-sm font-bold text-text-primary disabled:opacity-50" translate="no">50%</button>
+<button type="button" class="hover-scrim h-8 rounded-lg bg-bg-secondary px-3 text-sm font-bold text-text-primary disabled:opacity-50" translate="no">100%</button>
+</div>
+<button type="button" class="h-8 w-8 shrink-0 flex items-center justify-center text-text-tertiary hover:text-text-secondary transition-colors"><svg/></button>
+</div>
+<div class="flex flex-col px-2 text-sm">
+<div class="flex justify-between items-center">
+<div class="text-text-secondary"><span translate="no">$1.12 available</span></div>
+<button type="button" class="text-accent-primary hover:opacity-80 transition-opacity cursor-pointer shrink-0">Max</button>
+</div>
+</div>
+<button disabled="" class="py-2 text-center cursor-not-allowed bg-bg-secondary text-text-secondary flex h-11 items-center justify-center gap-2 rounded-xl border border-bg-tertiary/60 px-4 text-base font-bold overflow-hidden">
+<div class="min-w-0 truncate animate-flip-up">Sell RUSH</div>
+</button>
+<div class="rounded-xl overflow-hidden bg-critical-transparent">
+<div class="flex items-start py-2 gap-2 mx-2.5">
+<button type="button" class="shrink-0 mt-0.5" style="color: rgb(255, 98, 46); width: 16px; height: 16px;"><svg/></button>
+<button type="button" class="flex-1 min-w-0 flex items-start justify-between">
+<div class="flex flex-col text-left">
+<span class="text-sm font-bold text-critical">Warning: Liquidity unlocked</span>
+<span class="text-xs text-text-primary/60">I understand the risks of trading this token.</span>
+</div>
+<svg/>
+</button>
+</div>
+<div class="overflow-hidden transition-[max-height] duration-100 ease-out" style="max-height: 0px;">
+<div class="flex px-3 pb-3 pt-2 gap-2">
+<div class="shrink-0 w-4"></div>
+<div class="flex-1 min-w-0 flex flex-col gap-3">
+<div class="flex flex-col">
+<span class="text-sm font-medium text-text-primary">Liquidity unlocked</span>
+<span class="text-xs text-text-primary/60 leading-[1.3]">The token has a large amount of liquidity unlocked (90.03%), a common scam tactic that allows the creator of the token to prevent you from selling.</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="grid transition-[grid-template-rows,margin-top] duration-300 ease-out grid-rows-[0fr] mt-0"><div class="overflow-hidden min-h-0"></div></div>
+</div>

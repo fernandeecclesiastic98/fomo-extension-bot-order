@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ordres auto — réglages</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header class="top">
+      <div class="brand">
+        <img src="icons/icon32.png" alt="" width="20" height="20" />
+        <strong>Ordres auto</strong>
+      </div>
+      <label class="switch" title="Mettre en pause ou reprendre toute la surveillance">
+        <input type="checkbox" data-setting="enabled" />
+        <span data-slot="enabled-label">Actif</span>
+      </label>
+    </header>
+
+    <p class="health" data-slot="health">Chargement…</p>
+    <p class="banner" data-slot="banner" hidden></p>
+
+    <section>
+      <h2>Ordres</h2>
+      <div data-slot="orders"></div>
+      <p class="empty" data-slot="empty" hidden>
+        Aucun ordre. Sur la page d’un token fomo.family, choisis « Ordre auto » sous les onglets Buy / Sell.
+      </p>
+    </section>
+
+    <details>
+      <summary>Réglages</summary>
+      <div class="settings">
+        <label><input type="checkbox" data-setting="dryRun" /> Mode test : un ordre déclenché fait tout sauf le clic final (Buy ou Sell)</label>
+        <label><input type="checkbox" data-setting="acceptRiskWarnings" /> Cocher les avertissements du token (« Liquidity unlocked »…)</label>
+        <label><input type="checkbox" data-setting="allowHighPriceImpact" /> Accepter un impact de prix élevé (≥ 25 %)</label>
+        <label><input type="checkbox" data-setting="allowHighFees" /> Accepter des frais élevés (&gt; 10 % du montant)</label>
+        <label><input type="checkbox" data-setting="bringToFront" /> Mettre l’onglet d’exécution au premier plan (plus fiable)</label>
+        <label><input type="checkbox" data-setting="notifications" /> Notifications Windows</label>
+        <label class="num">Cotation toutes les <input type="number" min="2" max="60" data-setting="pollSec" /> s</label>
+        <label class="num">Tentatives avant envoi <input type="number" min="1" max="5" data-setting="maxAttempts" /></label>
+        <label class="num">Attente de confirmation du solde <input type="number" min="60" max="600" data-setting="verifySec" /> s</label>
+      </div>
+    </details>
+
+    <details>
+      <summary>Alertes sur le téléphone (Telegram)</summary>
+      <div class="settings">
+        <p class="fine">
+          Une notification Windows ne sert à rien quand l’ordinateur tourne seul la nuit. Avec un bot Telegram
+          personnel, tu reçois sur ton téléphone les déclenchements, les exécutions et les pannes (session fomo
+          fermée, interface changée). Crée un bot avec <b>@BotFather</b>, écris-lui une fois, puis récupère ton
+          identifiant de salon avec <b>@userinfobot</b>. Le jeton reste dans ce navigateur.
+        </p>
+        <label><input type="checkbox" data-setting="telegramAlerts" /> Envoyer les alertes sur Telegram</label>
+        <label class="num">Jeton du bot <input type="text" data-setting="telegramToken" placeholder="123456789:AA…" /></label>
+        <label class="num">Salon <input type="text" data-setting="telegramChatId" placeholder="123456789" /></label>
+        <button class="link" data-action="test-telegram">Envoyer un message de test</button>
+      </div>
+    </details>
+
+    <details>
+      <summary>Pour que ça vende pendant la nuit</summary>
+      <ul class="checklist">
+        <li>Windows : Paramètres › Système › Alimentation › mise en veille <b>Jamais</b> (sur secteur). L’écran peut s’éteindre.</li>
+        <li>Brave : brave://settings/system › Économiseur de mémoire › ajoute <b>fomo.family</b> aux sites toujours actifs.</li>
+        <li>Reste connecté à fomo. L’extension ouvre elle-même un onglet fomo épinglé si besoin : ne le ferme pas.</li>
+        <li>Ne réduis pas la fenêtre du navigateur. Si ça arrive quand même, lance Brave avec
+          <code>--disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-renderer-backgrounding</code>.</li>
+        <li>Fais un « Tester » sur chaque ordre avant d’aller dormir.</li>
+      </ul>
+    </details>
+
+    <details>
+      <summary>Journal</summary>
+      <div class="journal" data-slot="journal"></div>
+      <button class="link" data-action="clear-journal">Vider le journal</button>
+    </details>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

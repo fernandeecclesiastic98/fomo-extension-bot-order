@@ -1,0 +1,316 @@
+:root {
+  color-scheme: dark;
+  --bg: #060510;
+  --surface: #12111a;
+  --surface-2: #161522;
+  --line: #2a2938;
+  --t1: #f7f7f7;
+  --t2: #9899a3;
+  --t3: #747784;
+  --accent: #516af6;
+  --green: #21c95e;
+  --red: #ff622e;
+  --amber: #ffc74f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  width: 400px;
+  max-height: 600px;
+  padding: 12px;
+  background: var(--bg);
+  color: var(--t1);
+  font: 13px/1.4 Aeonik, 'DM Sans', system-ui, sans-serif;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+/* Ouverte en onglet (« Réglages et journal » depuis fomo) : colonne centrée plutôt que collée à gauche. */
+@media (min-width: 600px) {
+  body {
+    width: auto;
+    max-width: 560px;
+    max-height: none;
+    margin: 24px auto;
+  }
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+}
+
+.switch {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+}
+
+.health {
+  margin: 0 0 8px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: var(--surface-2);
+  font-size: 12px;
+}
+
+.health.ok {
+  color: var(--green);
+}
+
+.health.warn {
+  color: var(--amber);
+}
+
+.health.muted {
+  color: var(--t2);
+}
+
+.banner {
+  margin: 0 0 8px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(255, 199, 79, 0.12);
+  color: var(--amber);
+  font-size: 12px;
+}
+
+.banner[hidden],
+.empty[hidden] {
+  display: none;
+}
+
+h2 {
+  margin: 12px 0 6px;
+  font-size: 12px;
+  color: var(--t2);
+  font-weight: 600;
+}
+
+.empty {
+  color: var(--t2);
+  font-size: 12px;
+}
+
+.group {
+  margin-bottom: 8px;
+}
+
+.group-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin: 8px 0 4px;
+  font-weight: 700;
+}
+
+.group-title button {
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font-size: 12px;
+}
+
+.order {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 8px 10px;
+  margin-bottom: 6px;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+}
+
+.desc {
+  font-weight: 700;
+}
+
+.meta {
+  font-size: 11px;
+  color: var(--t2);
+  margin-top: 2px;
+}
+
+.err {
+  margin: 4px 0 0;
+  color: var(--red);
+  font-size: 12px;
+}
+
+.note {
+  margin: 4px 0 0;
+  color: var(--t3);
+  font-size: 11px;
+}
+
+.status {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 6px;
+  white-space: nowrap;
+  background: var(--line);
+  color: var(--t2);
+}
+
+.s-armed {
+  background: rgba(81, 106, 246, 0.18);
+  color: #8fa0ff;
+}
+
+.s-pending,
+.s-queued,
+.s-executing {
+  background: rgba(255, 199, 79, 0.15);
+  color: var(--amber);
+}
+
+.s-done {
+  background: rgba(33, 201, 94, 0.15);
+  color: var(--green);
+}
+
+.s-failed {
+  background: rgba(255, 98, 46, 0.15);
+  color: var(--red);
+}
+
+.actions {
+  display: flex;
+  gap: 4px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+}
+
+.actions button {
+  border: 0;
+  border-radius: 8px;
+  padding: 3px 8px;
+  background: var(--surface-2);
+  color: var(--t1);
+  font-size: 12px;
+}
+
+.actions button:hover {
+  background: var(--line);
+}
+
+details {
+  margin-top: 10px;
+  background: var(--surface);
+  border-radius: 12px;
+  padding: 8px 10px;
+}
+
+summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.settings {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.settings label {
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+  font-size: 12px;
+}
+
+.settings .num {
+  align-items: center;
+}
+
+.settings input[type='number'] {
+  width: 58px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  color: var(--t1);
+  border-radius: 6px;
+  padding: 2px 4px;
+}
+
+.checklist {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  font-size: 12px;
+  color: var(--t2);
+}
+
+.checklist li {
+  margin-bottom: 6px;
+}
+
+.checklist b {
+  color: var(--t1);
+}
+
+code {
+  font-size: 10.5px;
+  color: var(--t1);
+  word-break: break-all;
+}
+
+.journal {
+  margin-top: 8px;
+  max-height: 220px;
+  overflow: auto;
+  font-size: 11.5px;
+}
+
+.journal div {
+  padding: 3px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.journal time {
+  color: var(--t3);
+  margin-right: 6px;
+}
+
+.journal .ok {
+  color: var(--green);
+}
+
+.journal .warn {
+  color: var(--amber);
+}
+
+.journal .error {
+  color: var(--red);
+}
+
+.link {
+  margin-top: 6px;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  padding: 0;
+  font-size: 12px;
+}

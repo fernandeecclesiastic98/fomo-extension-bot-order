@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>$4.2M MC | DEMO | démo</title>
+    <!--
+      Page de démonstration pour les captures du README.
+      Elle reproduit UNIQUEMENT la structure DOM dont l'extension a besoin (onglets Buy/Sell,
+      champ de montant, boutons rapides, ligne « available », bouton de confirmation, bloc
+      d'avertissement) avec des chiffres fictifs : aucune donnée de compte, aucune marque.
+    -->
+    <style>
+      :root {
+        --color-bg-primary: #060510;
+        --color-bg-secondary: #12111a;
+        --color-bg-tertiary: #cbd0eb1a;
+        --color-text-primary: #f7f7f7;
+        --color-text-secondary: #9899a3;
+        --color-text-tertiary: #474b52;
+        --color-accent-primary: #516af6;
+        --color-accent-primary-transparent: #516af629;
+        --color-green: #21c95e;
+        --color-green-transparent: #21c95e33;
+        --color-red: #ff622e;
+        --color-red-transparent: #ff622e33;
+        --color-critical: #ff622e;
+        --color-critical-transparent: #ff622e1f;
+        --color-warning: #ffc74f;
+        --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+        color-scheme: dark;
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; background: var(--color-bg-primary); color: var(--color-text-primary); font-family: var(--font-sans); font-size: 14px; }
+      button { font: inherit; color: inherit; cursor: pointer; }
+      .app { display: flex; flex-direction: column; height: 100vh; padding: 8px 0 0 16px; gap: 12px; }
+      .top { display: flex; align-items: center; gap: 16px; padding-right: 16px; }
+      .search { flex: 1; height: 44px; border-radius: 12px; background: var(--color-bg-secondary); border: 1px solid var(--color-bg-tertiary);
+        display: flex; align-items: center; padding: 0 16px; color: var(--color-text-tertiary); }
+      .right { display: flex; min-width: 0; flex: 0 0 auto; justify-content: flex-end; }
+      nav ul { display: flex; gap: 8px; list-style: none; margin: 0; padding: 0; }
+      nav li { display: flex; flex-direction: column; justify-content: center; height: 48px; padding: 0 12px; border: 1px solid var(--color-bg-tertiary); border-radius: 12px; }
+      nav button { border: 0; background: none; padding: 0; text-align: left; }
+      .cash { display: flex; gap: 6px; align-items: baseline; }
+      .cash small { color: var(--color-text-tertiary); font-size: 13px; }
+      .deposit { color: var(--color-accent-primary); font-size: 12px; font-weight: 700; }
+      .body { display: flex; gap: 12px; flex: 1; min-height: 0; padding-right: 16px; }
+      .chart { flex: 1; border: 1px solid var(--color-bg-tertiary); border-radius: 16px; background:
+        linear-gradient(180deg, rgba(33,201,94,.06), transparent 60%), var(--color-bg-primary); position: relative; overflow: hidden; }
+      .chart .head { display: flex; gap: 18px; padding: 14px 16px; border-bottom: 1px solid var(--color-bg-tertiary); }
+      .chart .stat small { display: block; color: var(--color-text-secondary); font-size: 12px; }
+      .chart .stat b { font-size: 16px; font-weight: 600; }
+      .chart svg { position: absolute; inset: 60px 0 0 0; width: 100%; }
+      .column { width: 380px; flex: none; display: flex; flex-direction: column; gap: 16px; }
+      .panel { border: 1px solid var(--color-bg-tertiary); border-radius: 16px; padding: 8px; display: flex; flex-direction: column; gap: 8px; }
+      .tabs { display: flex; gap: 8px; }
+      .tabs button { flex: 1; padding: 8px; border: 0; border-radius: 8px; font-size: 16px; font-weight: 700; background: var(--color-bg-secondary); color: var(--color-text-secondary); }
+      .tabs button.on-buy { background: var(--color-green-transparent); color: var(--color-green); }
+      .tabs button.on-sell { background: var(--color-red-transparent); color: var(--color-red); }
+      .amount { background: var(--color-bg-secondary); border-radius: 12px; display: flex; align-items: stretch; font-size: 30px; }
+      .amount .left { flex: 1; display: flex; align-items: center; gap: 2px; padding: 16px 0 16px 16px; min-width: 0; }
+      .amount .left div { color: var(--color-text-tertiary); }
+      .amount input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: inherit; font: inherit; }
+      .amount .hint { display: flex; align-items: center; padding: 16px; color: var(--color-text-tertiary); font-size: 14px; }
+      .quick { display: flex; gap: 4px; }
+      .quick .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; flex: 1; }
+      .quick button { height: 32px; border: 0; border-radius: 8px; background: var(--color-bg-secondary); font-size: 14px; font-weight: 700; }
+      .gear { width: 32px; height: 32px; border: 0; border-radius: 8px; background: none; color: var(--color-text-tertiary); }
+      .available { display: flex; justify-content: space-between; padding: 0 8px; color: var(--color-text-secondary); }
+      .available button { border: 0; background: none; color: var(--color-accent-primary); font-weight: 600; }
+      .confirm { height: 44px; border-radius: 12px; border: 1px solid var(--color-bg-tertiary); background: var(--color-bg-secondary);
+        color: var(--color-text-secondary); font-size: 16px; font-weight: 700; }
+      .warn { border-radius: 12px; background: var(--color-critical-transparent); padding: 8px 10px; display: flex; gap: 8px; align-items: flex-start; }
+      .warn .box { width: 16px; height: 16px; border: 2px solid var(--color-critical); border-radius: 4px; flex: none; margin-top: 2px; background: none; }
+      .warn b { display: block; color: var(--color-critical); font-size: 14px; }
+      .warn span { color: rgba(247, 247, 247, .6); font-size: 12px; }
+      .card { border: 1px solid var(--color-bg-tertiary); border-radius: 16px; padding: 12px; }
+      .card h3 { margin: 0 0 8px; font-size: 16px; font-weight: 600; }
+      .card .row { display: flex; justify-content: space-between; font-size: 13px; color: var(--color-text-secondary); padding: 2px 0; }
+      .card .row b { color: var(--color-text-primary); font-weight: 600; }
+    </style>
+  </head>
+  <body>
+    <div class="desktop-content app">
+      <header class="top">
+        <strong style="font-size: 22px; letter-spacing: -0.5px">démo</strong>
+        <div class="search">Rechercher un token…</div>
+        <div class="right">
+          <nav aria-label="Main">
+            <ul>
+              <li>
+                <button><span class="cash"><span>$250.00</span><small>cash</small></span></button>
+                <button class="deposit" type="button">Deposit more</button>
+              </li>
+              <li><button><span>$1,240.00</span><br /><small style="color: var(--color-green); font-size: 12px">+ $184.00 24h</small></button></li>
+            </ul>
+          </nav>
+        </div>
+      </header>
+
+      <div class="body">
+        <div class="chart">
+          <div class="head">
+            <div class="stat"><small>Market cap</small><b>$4.2M</b></div>
+            <div class="stat"><small>Price</small><b>$0.0042</b></div>
+            <div class="stat"><small>24H change</small><b style="color: var(--color-green)">▲ 18.4%</b></div>
+            <div class="stat"><small>24H Vol.</small><b>$820K</b></div>
+            <div class="stat"><small>Liquidity</small><b>$310K</b></div>
+            <div class="stat"><small>Holders</small><b>1.4K</b></div>
+          </div>
+          <svg viewBox="0 0 600 300" preserveAspectRatio="none" id="bougies"></svg>
+          <script>
+            // Bougies décoratives : la page de démo ne sert qu'aux captures du README.
+            (() => {
+              const svg = document.getElementById('bougies');
+              let prix = 150;
+              let html = '';
+              for (let i = 0; i < 60; i++) {
+                const variation = (Math.sin(i / 3.5) + Math.sin(i / 1.7)) * 4 - 1.4;
+                const ouverture = prix;
+                prix = Math.max(30, Math.min(270, prix + variation));
+                const haut = Math.min(ouverture, prix) - 3 - Math.random() * 6;
+                const bas = Math.max(ouverture, prix) + 3 + Math.random() * 6;
+                const hausse = prix < ouverture;
+                const couleur = hausse ? '#21c95e' : '#ff622e';
+                const x = i * 10 + 5;
+                html += `<line x1="${x}" x2="${x}" y1="${haut}" y2="${bas}" stroke="${couleur}" stroke-width="1" />`;
+                html += `<rect x="${x - 3}" y="${Math.min(ouverture, prix)}" width="6" height="${Math.max(2, Math.abs(prix - ouverture))}" fill="${couleur}" />`;
+              }
+              svg.innerHTML = html;
+            })();
+          </script>
+        </div>
+
+        <div class="column">
+          <div>
+            <div class="panel">
+              <div class="tabs">
+                <button type="button" class="on-buy">Buy</button>
+                <button type="button">Sell</button>
+              </div>
+              <div class="amount">
+                <div class="left"><div>$</div><input placeholder="0" value="" /></div>
+                <div class="hint">Enter amount</div>
+              </div>
+              <div class="quick">
+                <div class="grid">
+                  <button type="button">$10</button>
+                  <button type="button">$100</button>
+                  <button type="button">$500</button>
+                  <button type="button">$1000</button>
+                </div>
+                <button type="button" class="gear">⚙</button>
+              </div>
+              <div class="available"><span>$250 available</span><button type="button">Max</button></div>
+              <button class="confirm" disabled>Buy DEMO</button>
+              <div class="warn">
+                <button type="button" class="box"></button>
+                <button type="button" style="border: 0; background: none; text-align: left; padding: 0">
+                  <b>Warning: Liquidity unlocked</b>
+                  <span>I understand the risks of trading this token.</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Your position</h3>
+            <div class="row"><span>Value</span><b>$1,240.00</b></div>
+            <div class="row"><span>Invested</span><b>$620.00</b></div>
+            <div class="row"><span>Avg entry</span><b>$2.1M MC</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
