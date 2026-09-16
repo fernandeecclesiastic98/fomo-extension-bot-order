@@ -5,16 +5,8 @@
   "version": "0.1.1",
   "description": "Ordres automatiques sur fomo.family : achat sur repli ou cassure, prise de profit, stop — depuis la page du token.",
   "minimum_chrome_version": "116",
-  "permissions": [
-    "storage",
-    "alarms",
-    "tabs",
-    "notifications"
-  ],
-  "host_permissions": [
-    "https://fomo.family/*",
-    "https://api.telegram.org/*"
-  ],
+  "permissions": ["storage", "alarms", "tabs", "notifications"],
+  "host_permissions": ["https://fomo.family/*", "https://api.telegram.org/*"],
   "background": {
     "service_worker": "background.js",
     "type": "module"
@@ -39,24 +31,15 @@
   },
   "content_scripts": [
     {
-      "matches": [
-        "https://fomo.family/*"
-      ],
-      "js": [
-        "content.js"
-      ],
+      "matches": ["https://fomo.family/*"],
+      "js": ["content.js"],
       "run_at": "document_idle"
     }
   ],
   "web_accessible_resources": [
     {
-      "resources": [
-        "lib/*.js",
-        "ui/*.js"
-      ],
-      "matches": [
-        "https://fomo.family/*"
-      ]
+      "resources": ["lib/*.js", "ui/*.js"],
+      "matches": ["https://fomo.family/*"]
     }
   ]
 }
