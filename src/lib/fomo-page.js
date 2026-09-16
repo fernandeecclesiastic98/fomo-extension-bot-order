@@ -35,6 +35,8 @@ export const LEXIQUE = {
   loggedOut: [/^(log ?in|sign ?in|sign ?up|connect)$/, /^(connexion|se connecter|s'?inscrire|connecte-toi)$/],
   acknowledge: [/understand|acknowledge|accept/, /j'?ai compris|je comprends|compris/],
   warning: [/understand|warning/, /compris|avertissement|attention/],
+  // Placeholder du champ de montant : « 0 » (EN) mais « Saisissez le montant » (FR, relevé réel).
+  amountField: ['0', /enter amount/, /saisissez le montant/, /^montant/],
 };
 
 /**
@@ -129,7 +131,12 @@ export function isSellTabActive(panel) {
 
 export function findAmountInput(panel) {
   const inputs = [...panel.querySelectorAll('input')].filter((i) => !isOurs(i));
-  return inputs.find((i) => i.getAttribute('placeholder') === '0') ?? inputs[0] ?? null;
+  return (
+    inputs.find((i) => i.getAttribute('placeholder') === '0') ??
+    inputs.find((i) => estUn('amountField', i.getAttribute('placeholder')) || contient('amountField', i.getAttribute('placeholder'))) ??
+    inputs[0] ??
+    null
+  );
 }
 
 export function findMaxButton(panel) {
@@ -222,11 +229,14 @@ export function findAcknowledgements(panel) {
 
   for (const textButton of buttons(panel)) {
     const label = textOf(textButton);
-    if (!contient('acknowledge', label)) continue;
     const row = textButton.parentElement;
     const checkbox =
       [...(row?.children ?? [])].find((el) => el !== textButton && (el.tagName === 'BUTTON' || isAckCheckbox(el))) ??
       row?.querySelector('input[type="checkbox"],[role="checkbox"]');
+    // « I understand… » suffit. En français, le relevé réel ne montre que « Attention : Low
+    // liquidity » : on ne le retient alors QUE s'il porte une case à cocher voisine — sinon on
+    // cliquerait un simple libellé d'alerte au lieu d'une vraie confirmation.
+    if (!contient('acknowledge', label) && !(contient('warning', label) && checkbox)) continue;
     const target = checkbox ?? textButton;
     if (seen.has(target)) continue;
     seen.add(target);

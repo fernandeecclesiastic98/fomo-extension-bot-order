@@ -275,3 +275,58 @@ describe('libellés réels relevés en français', () => {
     expect(findTradeTabs(document)).toBeNull();
   });
 });
+
+/**
+ * Panneau de trade RELEVÉ en français (token WASSIE, 2026-09-16), une fois l'extension greffée :
+ * « $0.92 disponible », placeholder « Saisissez le montant », alerte « Attention : Low liquidity »,
+ * et nos propres boutons « Au marché » / « Ordre auto 0 » qui ne doivent JAMAIS être lus.
+ */
+describe('panneau français relevé, extension greffée', () => {
+  const panneau = (extra = '') => `
+    <div class="rounded-2xl">
+      <div class="flex gap-2"><button>Acheter</button><button>Vendre</button></div>
+      <div data-tpa="mode"><button>Au marché</button><button>Ordre auto 0</button></div>
+      <div><span>$</span><input placeholder="Saisissez le montant"></div>
+      <div class="flex"><div class="grid">${['$10', '$100', '$500', '$1000'].map((t) => `<button>${t}</button>`).join('')}</div></div>
+      <div><span>$0.92 disponible</span><button>Max.</button></div>
+      <button>Acheter WASSIE</button>
+      ${extra}
+    </div>`;
+
+  beforeEach(() => {
+    document.documentElement.lang = 'fr';
+    document.body.innerHTML = panneau();
+  });
+
+  it('« $0.92 disponible » est lu comme 0.92', () => {
+    expect(readAvailableUsd(findTradePanel(document))).toBe(0.92);
+  });
+
+  it('champ de montant retrouvé par « Saisissez le montant », pas par placeholder="0"', () => {
+    const input = findAmountInput(findTradePanel(document));
+    expect(input?.getAttribute('placeholder')).toBe('Saisissez le montant');
+    expect(input.closest('[data-tpa]')).toBeNull();
+  });
+
+  it('nos boutons « Au marché » / « Ordre auto 0 » ne sont jamais pris pour ceux de fomo', () => {
+    const panel = findTradePanel(document);
+    expect(findAmountPresets(panel).map((p) => p.value)).toEqual([10, 100, 500, 1000]);
+    expect(findConfirmButton(panel, 'WASSIE', 'buy').textContent).toBe('Acheter WASSIE');
+    expect(findMaxButton(panel).textContent).toBe('Max.');
+  });
+
+  it('« Attention : Low liquidity » SEUL n’est pas une confirmation à cocher', () => {
+    document.body.innerHTML = panneau('<div><button>Attention : Low liquidity</button></div>');
+    expect(findAcknowledgements(findTradePanel(document))).toHaveLength(0);
+    // …et il n'est pas pris pour le bouton de confirmation non plus.
+    expect(findConfirmButton(findTradePanel(document), null, 'buy').textContent).toBe('Acheter WASSIE');
+  });
+
+  it('« Attention : … » AVEC une case voisine est bien une confirmation', () => {
+    document.body.innerHTML = panneau('<div><button class="shrink-0"></button><button>Attention : Low liquidity</button></div>');
+    const acks = findAcknowledgements(findTradePanel(document));
+    expect(acks).toHaveLength(1);
+    expect(acks[0].el.className).toContain('shrink-0');
+    expect(acks[0].kind).toBe('risk');
+  });
+});
